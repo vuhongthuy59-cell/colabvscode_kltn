@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>News Impact Demo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div>
+            <h1>News Impact</h1>
+            <p>Stock volatility demo</p>
+          </div>
+        </div>
+
+        <div class="tab-nav" aria-label="Chế độ demo">
+          <button class="tab-button active" type="button" data-tab="real">Tin thật</button>
+          <button class="tab-button" type="button" data-tab="manual">Tin nhập</button>
+          <button class="tab-button" type="button" data-tab="model">Model</button>
+        </div>
+
+        <div class="filters">
+          <div class="tab-section manual-controls">
+          <p class="mode-note">Tin nhập thủ công dùng nhận diện ticker và sentiment rule-based để minh họa. Chưa chạy inference GNN thật.</p>
+          <label for="customTitle">Nhập tiêu đề tin mới</label>
+          <textarea id="customTitle" rows="4" placeholder="VD: FPT và POW quyết định hợp tác phát triển dự án năng lượng..."></textarea>
+
+          <label for="customDate">Ngày sự kiện</label>
+          <input id="customDate" type="date" value="2025-05-19" />
+
+          <button id="analyzeButton" class="primary-button" type="button">Phân tích tin nhập</button>
+          <div id="manualWarning" class="warning-box hidden"></div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="tab-section real-controls model-controls">
+          <p id="dataScopeNote" class="mode-note">Đang tải dữ liệu tin thật...</p>
+          <label for="searchInput">Tìm tin tức hoặc mã cổ phiếu</label>
+          <input id="searchInput" type="search" placeholder="VD: FPT, trái phiếu, earnings" />
+
+          <label for="dateFilter">Tìm theo ngày dữ liệu thật</label>
+          <input id="dateFilter" type="date" />
+
+            <label for="categoryFilter">Nhóm sự kiện</label>
+            <select id="categoryFilter">
+              <option value="">Tất cả nhóm</option>
+            </select>
+            <button id="clearFiltersButton" class="secondary-button" type="button">Xóa bộ lọc</button>
+          </div>
+
+          <div class="tab-section model-controls">
+          <label for="modelSelect">Mô hình hiển thị</label>
+          <select id="modelSelect"></select>
+          <p class="mode-note">Model dự báo realized volatility 5 phiên, không dự báo giá cổ phiếu.</p>
+          </div>
+        </div>
+
+        <div id="articleList" class="article-list" aria-label="Danh sách tin tức"></div>
+      </aside>
+
+      <main class="main">
+        <section class="event-header">
+          <div class="event-title">
+            <div id="eventMeta" class="eyebrow">Đang tải dữ liệu...</div>
+            <h2 id="eventTitle">News Impact Demo</h2>
+            <div id="eventTags" class="tag-row"></div>
+          </div>
+            <div class="metric-strip">
+            <div>
+              <span id="kpiTickersLabel">Tickers</span>
+              <strong id="kpiTickers">-</strong>
+            </div>
+            <div>
+              <span id="kpiTrueLabel">True vol</span>
+              <strong id="kpiTrue">-</strong>
+            </div>
+            <div>
+              <span id="kpiPredLabel">Predicted</span>
+              <strong id="kpiPred">-</strong>
+            </div>
+            <div>
+              <span id="kpiErrorLabel">MAE</span>
+              <strong id="kpiError">-</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-grid">
+          <div class="panel influence-panel">
+          <div class="panel-head">
+              <div>
+                <h3 id="impactTitle">Ảnh hưởng theo cổ phiếu</h3>
+                <p id="selectedModelLabel">-</p>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Mã</th>
+                    <th>Thực tế</th>
+                    <th>Dự báo</th>
+                    <th>Sai số</th>
+                    <th>Sentiment</th>
+                  </tr>
+                </thead>
+                <tbody id="impactTable"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel chart-panel">
+            <div class="panel-head">
+              <div>
+                <h3>Giá quanh ngày tin</h3>
+                <p id="priceChartLabel">-</p>
+              </div>
+              <select id="tickerSelect"></select>
+            </div>
+            <canvas id="priceCanvas" width="900" height="360"></canvas>
+          </div>
+
+          <div class="panel graph-panel">
+            <div class="panel-head">
+              <div>
+                <h3>Đồ thị quan hệ</h3>
+                <p>Liên kết giữa mã được nhắc tới và doanh nghiệp liên quan</p>
+              </div>
+            </div>
+            <svg id="relationGraph" viewBox="0 0 760 420" role="img" aria-label="Đồ thị quan hệ cổ phiếu"></svg>
+            <div class="legend" id="graphLegend"></div>
+          </div>
+
+          <div class="panel metrics-panel">
+            <div class="panel-head">
+              <div>
+                <h3 id="bottomPanelTitle">So sánh mô hình</h3>
+                <p id="bottomPanelSubtitle">MAE/RMSE trên tập test</p>
+              </div>
+            </div>
+            <div id="modelBars" class="model-bars"></div>
+            <div id="movementTableWrap" class="table-wrap hidden">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Mã</th>
+                    <th>Vai trò</th>
+                    <th>Ngành</th>
+                    <th>+1 ngày</th>
+                    <th>+2 ngày</th>
+                    <th>+3 ngày</th>
+                    <th>+5 ngày</th>
+                    <th>+10 ngày</th>
+                  </tr>
+                </thead>
+                <tbody id="movementTable"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel forecast-panel">
+            <div class="panel-head">
+              <div>
+                <h3>Volatility thật và dự đoán</h3>
+                <p id="forecastChartLabel">So sánh realized volatility 5 phiên của mã đang chọn</p>
+              </div>
+              <div class="line-legend">
+                <span><i class="actual-line"></i>Dữ liệu thật</span>
+                <span><i class="pred-line"></i>Dữ liệu dự đoán</span>
+              </div>
+            </div>
+            <div class="forecast-summary">
+              <div>
+                <span>Dữ liệu thật</span>
+                <strong id="forecastActualValue">-</strong>
+              </div>
+              <div>
+                <span>Dữ liệu dự đoán</span>
+                <strong id="forecastPredValue">-</strong>
+              </div>
+              <div>
+                <span>Độ lệch</span>
+                <strong id="forecastGapValue">-</strong>
+              </div>
+            </div>
+            <canvas id="forecastCanvas" width="900" height="260"></canvas>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js?v=20260519-forecast-clear"></script>
+  </body>
+</html>

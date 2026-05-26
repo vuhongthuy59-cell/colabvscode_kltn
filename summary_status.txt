@@ -1,0 +1,123 @@
+======================================================================
+TRANG THAI TUNG TICKER
+======================================================================
+TICKER|F1 raw |F2 raw |MENTIONS | GHICHU
+----------------------------------------------------------------------
+AAA   |CO     |CO     |      324| OK
+ABB   |--     |CO     |        0| CHI CO 2025-2026
+ACB   |--     |CO     |        6| CHI CO 2025-2026
+ACL   |--     |CO     |        0| CHI CO 2025-2026
+ACV   |CO     |CO     |      283| OK
+AGG   |--     |CO     |        0| CHI CO 2025-2026
+AGR   |--     |CO     |        0| CHI CO 2025-2026
+ANV   |CO     |CO     |      292| OK
+APH   |CO     |CO     |      325| OK
+AST   |CO     |CO     |      195| OK
+BAF   |CO     |CO     |      538| OK
+BCM   |--     |CO     |        5| CHI CO 2025-2026
+BFC   |--     |CO     |        0| CHI CO 2025-2026
+BID   |CO     |CO     |     1388| OK
+BMP   |CO     |CO     |      222| OK
+BSI   |--     |CO     |        1| CHI CO 2025-2026
+BSR   |--     |CO     |        5| CHI CO 2025-2026
+BWE   |--     |CO     |        5| CHI CO 2025-2026
+C4G   |--     |CO     |        1| CHI CO 2025-2026
+CMG   |CO     |CO     |      446| OK
+CRE   |--     |CO     |        1| CHI CO 2025-2026
+CSV   |--     |CO     |        1| CHI CO 2025-2026
+CTD   |CO     |CO     |      431| OK
+CTG   |--     |CO     |       28| CHI CO 2025-2026
+CTS   |--     |CO     |        3| CHI CO 2025-2026
+DBC   |CO     |CO     |      399| OK
+DBD   |CO     |CO     |      275| OK
+DCM   |--     |CO     |        9| CHI CO 2025-2026
+DGC   |--     |CO     |       15| CHI CO 2025-2026
+DGW   |CO     |CO     |      404| OK
+DHG   |CO     |CO     |      193| OK
+DIG   |--     |CO     |        5| CHI CO 2025-2026
+DMC   |--     |CO     |        0| CHI CO 2025-2026
+DPG   |--     |CO     |        5| CHI CO 2025-2026
+DPM   |--     |CO     |        6| CHI CO 2025-2026
+DXG   |--     |CO     |        4| CHI CO 2025-2026
+EIB   |CO     |CO     |      989| OK
+ELC   |CO     |CO     |      346| OK
+FCN   |CO     |CO     |      309| OK
+FMC   |CO     |CO     |      208| OK
+FOX   |CO     |CO     |      211| OK
+FPT   |--     |CO     |       93| CHI CO 2025-2026
+FRT   |CO     |CO     |      348| OK
+FTS   |--     |CO     |       10| CHI CO 2025-2026
+GAS   |--     |CO     |       20| CHI CO 2025-2026
+GEG   |--     |CO     |        9| CHI CO 2025-2026
+GEX   |--     |CO     |       12| CHI CO 2025-2026
+GMD   |CO     |CO     |      407| OK
+GVR   |--     |CO     |       13| CHI CO 2025-2026
+HAH   |CO     |CO     |      542| OK
+HCM   |--     |CO     |       43| CHI CO 2025-2026
+HDB   |--     |CO     |       23| CHI CO 2025-2026
+HDG   |--     |CO     |        8| CHI CO 2025-2026
+HHV   |CO     |CO     |      422| OK
+HPG   |CO     |CO     |      728| OK
+HSG   |CO     |CO     |      464| OK
+IDI   |CO     |CO     |      180| OK
+IJC   |--     |CO     |        2| CHI CO 2025-2026
+IMP   |CO     |CO     |      301| OK
+JVC   |--     |CO     |        0| CHI CO 2025-2026
+KBC   |CO     |CO     |      515| OK
+KDC   |--     |CO     |        4| CHI CO 2025-2026
+KDH   |--     |CO     |        7| CHI CO 2025-2026
+LCG   |CO     |CO     |      244| OK
+LPB   |CO     |CO     |     1623| OK
+LTG   |--     |CO     |        0| CHI CO 2025-2026
+MBB   |--     |CO     |       10| CHI CO 2025-2026
+MSB   |--     |CO     |        4| CHI CO 2025-2026
+MSN   |CO     |CO     |      700| OK
+MWG   |--     |CO     |       33| CHI CO 2025-2026
+NKG   |CO     |CO     |      333| OK
+NLG   |--     |CO     |       14| CHI CO 2025-2026
+NT2   |--     |CO     |       10| CHI CO 2025-2026
+NTL   |--     |CO     |        0| CHI CO 2025-2026
+OCB   |CO     |CO     |     1199| OK
+ORS   |--     |CO     |        1| CHI CO 2025-2026
+PAN   |--     |CO     |        1| CHI CO 2025-2026
+PC1   |--     |CO     |       10| CHI CO 2025-2026
+PDR   |--     |CO     |        4| CHI CO 2025-2026
+PGV   |--     |CO     |        0| CHI CO 2025-2026
+PHR   |--     |CO     |        2| CHI CO 2025-2026
+PLX   |--     |CO     |        4| CHI CO 2025-2026
+PNJ   |CO     |CO     |      664| OK
+POW   |CO     |CO     |      298| OK
+PPC   |--     |CO     |       37| CHI CO 2025-2026
+PVD   |--     |CO     |        4| CHI CO 2025-2026
+PVS   |--     |CO     |        8| CHI CO 2025-2026
+QNS   |--     |CO     |        4| CHI CO 2025-2026
+REE   |CO     |CO     |      537| OK
+SAB   |CO     |CO     |      339| OK
+SCR   |CO     |CO     |      320| OK
+SCS   |CO     |CO     |      267| OK
+SGN   |--     |CO     |        0| CHI CO 2025-2026
+SHB   |CO     |CO     |     1073| OK
+SIP   |--     |CO     |        5| CHI CO 2025-2026
+SSB   |--     |CO     |        3| CHI CO 2025-2026
+SSI   |--     |CO     |       41| CHI CO 2025-2026
+STB   |--     |CO     |       45| CHI CO 2025-2026
+SZC   |--     |CO     |        3| CHI CO 2025-2026
+TCB   |--     |CO     |       18| CHI CO 2025-2026
+TPB   |--     |CO     |        4| CHI CO 2025-2026
+TRA   |CO     |CO     |      215| OK
+VCB   |--     |CO     |       43| CHI CO 2025-2026
+VCG   |--     |CO     |        8| CHI CO 2025-2026
+VCI   |--     |CO     |        4| CHI CO 2025-2026
+VGI   |--     |CO     |        7| CHI CO 2025-2026
+VHC   |CO     |CO     |      405| OK
+VHM   |--     |CO     |       38| CHI CO 2025-2026
+VIB   |CO     |CO     |     1230| OK
+VIC   |--     |CO     |       36| CHI CO 2025-2026
+VIX   |--     |CO     |       11| CHI CO 2025-2026
+VJC   |CO     |CO     |      486| OK
+VND   |--     |CO     |       23| CHI CO 2025-2026
+VNM   |--     |CO     |       46| CHI CO 2025-2026
+VPB   |--     |CO     |       14| CHI CO 2025-2026
+VRE   |--     |CO     |        6| CHI CO 2025-2026
+VSC   |CO     |CO     |      550| OK
+VTP   |CO     |CO     |      227| OK

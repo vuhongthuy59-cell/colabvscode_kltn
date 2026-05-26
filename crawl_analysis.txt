@@ -1,0 +1,77 @@
+Trong crawl script: 80/118
+Khong trong crawl script: 38/118
+Co raw data: 46/118
+
+=== CAN CRAWL BO SUNG ===
+  ABB -- CHUA CO TRONG CRAWL SCRIPT, can them
+  ACB -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  ACL -- CHUA CO TRONG CRAWL SCRIPT, can them
+  AGG -- CHUA CO TRONG CRAWL SCRIPT, can them
+  AGR -- CHUA CO TRONG CRAWL SCRIPT, can them
+  BCM -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  BFC -- CHUA CO TRONG CRAWL SCRIPT, can them
+  BSI -- CHUA CO TRONG CRAWL SCRIPT, can them
+  BSR -- CHUA CO TRONG CRAWL SCRIPT, can them
+  BWE -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  C4G -- CHUA CO TRONG CRAWL SCRIPT, can them
+  CRE -- CHUA CO TRONG CRAWL SCRIPT, can them
+  CSV -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  CTG -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  CTS -- CHUA CO TRONG CRAWL SCRIPT, can them
+  DCM -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  DGC -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  DIG -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  DMC -- CHUA CO TRONG CRAWL SCRIPT, can them
+  DPG -- CHUA CO TRONG CRAWL SCRIPT, can them
+  DPM -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  DXG -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  FPT -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  FTS -- CHUA CO TRONG CRAWL SCRIPT, can them
+  GAS -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  GEG -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  GEX -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  GVR -- CHUA CO TRONG CRAWL SCRIPT, can them
+  HCM -- CHUA CO TRONG CRAWL SCRIPT, can them
+  HDB -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  HDG -- CHUA CO TRONG CRAWL SCRIPT, can them
+  IJC -- CHUA CO TRONG CRAWL SCRIPT, can them
+  JVC -- CHUA CO TRONG CRAWL SCRIPT, can them
+  KDC -- CHUA CO TRONG CRAWL SCRIPT, can them
+  KDH -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  LTG -- CHUA CO TRONG CRAWL SCRIPT, can them
+  MBB -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  MSB -- CHUA CO TRONG CRAWL SCRIPT, can them
+  MWG -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  NLG -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  NT2 -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  NTL -- CHUA CO TRONG CRAWL SCRIPT, can them
+  ORS -- CHUA CO TRONG CRAWL SCRIPT, can them
+  PAN -- CHUA CO TRONG CRAWL SCRIPT, can them
+  PC1 -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  PDR -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  PGV -- CHUA CO TRONG CRAWL SCRIPT, can them
+  PHR -- CHUA CO TRONG CRAWL SCRIPT, can them
+  PLX -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  PPC -- CHUA CO TRONG CRAWL SCRIPT, can them
+  PVD -- CHUA CO TRONG CRAWL SCRIPT, can them
+  PVS -- CHUA CO TRONG CRAWL SCRIPT, can them
+  QNS -- CHUA CO TRONG CRAWL SCRIPT, can them
+  SGN -- CHUA CO TRONG CRAWL SCRIPT, can them
+  SIP -- CHUA CO TRONG CRAWL SCRIPT, can them
+  SSB -- CHUA CO TRONG CRAWL SCRIPT, can them
+  SSI -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  STB -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  SZC -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  TCB -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  TPB -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  VCB -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  VCG -- CHUA CO TRONG CRAWL SCRIPT, can them
+  VCI -- CHUA CO TRONG CRAWL SCRIPT, can them
+  VGI -- CHUA CO TRONG CRAWL SCRIPT, can them
+  VHM -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  VIC -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  VIX -- CHUA CO TRONG CRAWL SCRIPT, can them
+  VND -- CHUA CO TRONG CRAWL SCRIPT, can them
+  VNM -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  VPB -- DA CO TRONG CRAWL SCRIPT, can chay lai
+  VRE -- DA CO TRONG CRAWL SCRIPT, can chay lai

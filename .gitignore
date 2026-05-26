@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Notebooks checkpoint
+.ipynb_checkpoints/
+
+# PyTorch model files
+*.pt
+
+# Processed data (can be regenerated)
+data/processed/
+data/processed_backup/
+
+# Generated demo data
+web_demo/data/demo-data.json
+
+# Temp / scratch analysis files
+_*.txt
+_*.html
+_*.csv
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
