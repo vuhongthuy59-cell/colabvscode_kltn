@@ -20,13 +20,13 @@ from data_config import (
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
-OUT_DIR = DATA_DIR / "processed"
+OUT_DIR = ROOT / "outputs" / "02_build_news_dataset"
 
 NEWS_FILE = DATA_DIR / "data_origial" / "News_2022_2025_2.xlsx"
 NEWS_APPEND_FILE = DATA_DIR / "data_origial" / "Vietstock_News_2025_2026_append.xlsx"
 NEWS_CRAWL_FILE = DATA_DIR / "data_origial" / "Vietstock_News_2022_2025_crawl.xlsx"
-UNIVERSE_FILE = DATA_DIR / "processed" / "ticker_list.csv"
-MASTER_CLOSE_FILE = DATA_DIR / "processed" / "master_close.csv"
+UNIVERSE_FILE = ROOT / "outputs" / "01_build_price_dataset" / "ticker_list.csv"
+MASTER_CLOSE_FILE = ROOT / "outputs" / "01_build_price_dataset" / "master_close.csv"
 
 
 MANUAL_ALIASES: dict[str, tuple[str, list[str]]] = {
@@ -485,7 +485,7 @@ def main() -> None:
     raw_news["sentiment_label"] = raw_news["general_sentiment"].map(sentiment_label)
 
     # === LOAD MANUAL LABELS (override rule-based) ===
-    MANUAL_LABELS_FILE = DATA_DIR / "processed" / "manual_labels.csv"
+    MANUAL_LABELS_FILE = DATA_DIR / "manual_labels.csv"
     if MANUAL_LABELS_FILE.exists():
         manual = pd.read_csv(MANUAL_LABELS_FILE)
         manual = manual.dropna(subset=["manual_sentiment", "manual_category"])

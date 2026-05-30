@@ -8,7 +8,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
-OUT_DIR = DATA_DIR / "processed"
+OUT_DIR = ROOT / "outputs" / "07_evaluate_results_and_case_studies"
 
 
 def rmse(y_true: pd.Series, y_pred: pd.Series) -> float:
@@ -16,9 +16,9 @@ def rmse(y_true: pd.Series, y_pred: pd.Series) -> float:
 
 
 def add_context(predictions: pd.DataFrame) -> pd.DataFrame:
-    snapshot_index = pd.read_csv(OUT_DIR / "snapshot_index.csv")
-    articles = pd.read_csv(OUT_DIR / "news_articles.csv")
-    ticker_map = pd.read_json(OUT_DIR / "ticker_to_idx.json", typ="series")
+    snapshot_index = pd.read_csv(ROOT / "outputs" / "04_build_graph_snapshots" / "snapshot_index.csv")
+    articles = pd.read_csv(ROOT / "outputs" / "02_build_news_dataset" / "news_articles.csv")
+    ticker_map = pd.read_json(ROOT / "outputs" / "04_build_graph_snapshots" / "ticker_to_idx.json", typ="series")
     idx_to_ticker = {int(idx): ticker for ticker, idx in ticker_map.items()}
 
     context_cols = [
@@ -61,7 +61,7 @@ def grouped_metrics(df: pd.DataFrame, group_cols: list[str]) -> pd.DataFrame:
 def build_case_studies(df: pd.DataFrame) -> pd.DataFrame:
     test_df = df[df["split"].eq("test")].copy()
     best_model = (
-        pd.read_csv(OUT_DIR / "model_comparison_test.csv")
+        pd.read_csv(ROOT / "outputs" / "06_train_gnn_ablation_models" / "model_comparison_test.csv")
         .sort_values("mae")
         .iloc[0]["model"]
     )
@@ -97,8 +97,8 @@ def build_case_studies(df: pd.DataFrame) -> pd.DataFrame:
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    ablation_predictions = pd.read_csv(OUT_DIR / "ablation_predictions.csv")
-    baseline_predictions = pd.read_csv(OUT_DIR / "baseline_predictions.csv")
+    ablation_predictions = pd.read_csv(ROOT / "outputs" / "06_train_gnn_ablation_models" / "ablation_predictions.csv")
+    baseline_predictions = pd.read_csv(ROOT / "outputs" / "05_train_baselines" / "baseline_predictions.csv")
     predictions = pd.concat([baseline_predictions, ablation_predictions], ignore_index=True)
     enriched = add_context(predictions)
 

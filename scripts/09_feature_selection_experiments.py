@@ -12,13 +12,13 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_DIR = ROOT / "data" / "processed"
+OUT_DIR = ROOT / "outputs" / "09_feature_selection_experiments"
 
-SNAPSHOT_FILE = OUT_DIR / "graph_snapshots.pt"
-SNAPSHOT_INDEX_FILE = OUT_DIR / "snapshot_index.csv"
-EDGE_TYPE_MAP_FILE = OUT_DIR / "edge_type_map.json"
-FEATURE_SCHEMA_FILE = OUT_DIR / "node_feature_schema.json"
-RF_IMPORTANCE_FILE = OUT_DIR / "rf_feature_importance.csv"
+SNAPSHOT_FILE = ROOT / "outputs" / "04_build_graph_snapshots" / "graph_snapshots.pt"
+SNAPSHOT_INDEX_FILE = ROOT / "outputs" / "04_build_graph_snapshots" / "snapshot_index.csv"
+EDGE_TYPE_MAP_FILE = ROOT / "outputs" / "04_build_graph_snapshots" / "edge_type_map.json"
+FEATURE_SCHEMA_FILE = ROOT / "outputs" / "04_build_graph_snapshots" / "node_feature_schema.json"
+RF_IMPORTANCE_FILE = ROOT / "outputs" / "05_train_baselines" / "rf_feature_importance.csv"
 
 RANDOM_STATE = 42
 EPOCHS = 20

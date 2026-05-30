@@ -1,0 +1,16 @@
+﻿metric,value,note
+metadata_ticker_count,118,Expected 118 tickers
+metadata_missing_industry,0,Must be 0 for same_industry generation
+raw_relationship_rows,10,Rows in relationships.xlsx sheet mqh công ty khác
+raw_relationship_rows_excluded_not_in_universe,1,Rows where source or target is not in 118 tickers
+raw_relationship_rows_unverified,1,Rows marked Chưa xác minh are excluded from group/control edges
+company_group_rows,12,Rows in company_groups.csv
+company_group_count,3,Groups used to generate same_group edges
+parent_subsidiary_raw_rows,3,Verified control/parent-subsidiary pairs
+parent_subsidiary_edges,6,Includes reverse subsidiary_to_parent edges
+same_group_edges,50,Directed rows for GNN message passing; is_directed=0 indicates symmetric relation
+same_industry_edges,1342,Directed rows for each same-industry pair
+company_relationships_rows,1398,"Union of parent/subsidiary, same_group, same_industry"
+duplicate_relationship_rows,0,"Duplicates by source,target,relation_type after merge"
+parent_default_weight_rows,2,Rows using research-defined default parent/sub weights
+parent_ownership_weight_rows,1,Rows using extracted ownership_pct

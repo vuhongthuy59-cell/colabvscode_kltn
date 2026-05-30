@@ -1,0 +1,17 @@
+metric,value,note
+input_articles,55518.0,Firm-specific articles from news_articles.csv
+saved_snapshots,42886.0,Snapshots saved to graph_snapshots.pt
+skipped_articles,12632.0,Articles skipped by temporal/data availability rules
+num_nodes,118.0,Fixed stock universe size
+num_node_features,59.0,price + micro + industry + macro + news + category + exposure
+category_count,10.0,News category one-hot width
+unique_event_dates,740.0,Correlation cache keys
+edge_type_count,6.0,"price, relationships, news co-mention"
+mean_edges_per_snapshot,13695.62626498158,Average total edges
+min_edges_per_snapshot,12692.0,Minimum total edges
+max_edges_per_snapshot,14868.0,Maximum total edges
+mean_target_count,1.0437205614885976,Average directly mentioned tickers
+skipped_insufficient_252d_correlation_history,10814.0,Skip reason count
+skipped_insufficient_20d_feature_history,1266.0,Skip reason count
+skipped_insufficient_5d_future_label,418.0,Skip reason count
+skipped_insufficient_target_future_returns,134.0,Skip reason count

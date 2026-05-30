@@ -10,17 +10,17 @@ import torch
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
-OUT_DIR = DATA_DIR / "processed"
+OUT_DIR = ROOT / "outputs" / "04_build_graph_snapshots"
 
-TICKER_FILE = OUT_DIR / "ticker_list.csv"
-FEATURE_FILE = OUT_DIR / "stock_features.csv"
-LOG_RETURN_FILE = OUT_DIR / "master_log_return.csv"
-NEWS_ARTICLES_FILE = OUT_DIR / "news_articles.csv"
-NEWS_MENTIONS_FILE = OUT_DIR / "news_mentions.csv"
-RELATIONSHIP_FILE = OUT_DIR / "company_relationships.csv"
-TICKER_METADATA_FILE = OUT_DIR / "ticker_metadata.csv"
-STOCK_MICRO_FILE = OUT_DIR / "stock_micro_features.csv"
-MARKET_MACRO_FILE = OUT_DIR / "market_macro_features.csv"
+TICKER_FILE = ROOT / "outputs" / "01_build_price_dataset" / "ticker_list.csv"
+FEATURE_FILE = ROOT / "outputs" / "01_build_price_dataset" / "stock_features.csv"
+LOG_RETURN_FILE = ROOT / "outputs" / "01_build_price_dataset" / "master_log_return.csv"
+NEWS_ARTICLES_FILE = ROOT / "outputs" / "02_build_news_dataset" / "news_articles.csv"
+NEWS_MENTIONS_FILE = ROOT / "outputs" / "02_build_news_dataset" / "news_mentions.csv"
+RELATIONSHIP_FILE = ROOT / "outputs" / "03_build_company_relationships" / "company_relationships.csv"
+TICKER_METADATA_FILE = ROOT / "outputs" / "01_build_price_dataset" / "ticker_metadata.csv"
+STOCK_MICRO_FILE = DATA_DIR / "processed" / "stock_micro_features.csv"
+MARKET_MACRO_FILE = DATA_DIR / "processed" / "market_macro_features.csv"
 FEATURE_SCHEMA_FILE = OUT_DIR / "node_feature_schema.json"
 
 LOOKBACK_RETURNS = 20

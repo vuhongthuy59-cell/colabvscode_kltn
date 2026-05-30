@@ -8,8 +8,8 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
-PROCESSED_DIR = DATA_DIR / "processed"
-OUT_DIR = PROCESSED_DIR / "report_outputs"
+PROCESSED_DIR = ROOT / "outputs"
+OUT_DIR = ROOT / "outputs" / "08_generate_report_tables_and_figures"
 
 
 def save_csv(df: pd.DataFrame, name: str) -> None:
@@ -39,7 +39,7 @@ def plot_model_metrics(df: pd.DataFrame) -> None:
 
 
 def plot_rf_importance() -> None:
-    importance = pd.read_csv(PROCESSED_DIR / "rf_feature_importance.csv").head(15).sort_values("importance")
+    importance = pd.read_csv(ROOT / "outputs" / "05_train_baselines" / "rf_feature_importance.csv").head(15).sort_values("importance")
     plt.figure(figsize=(9, 6))
     plt.barh(importance["feature"], importance["importance"])
     plt.xlabel("Importance")
@@ -48,7 +48,7 @@ def plot_rf_importance() -> None:
 
 
 def plot_training_curves() -> None:
-    log = pd.read_csv(PROCESSED_DIR / "full_model_training_log.csv")
+    log = pd.read_csv(ROOT / "outputs" / "06_train_gnn_ablation_models" / "full_model_training_log.csv")
     plt.figure(figsize=(10, 5))
     for model, group in log.groupby("model"):
         plt.plot(group["epoch"], group["val_mae"], label=model)
@@ -60,9 +60,9 @@ def plot_training_curves() -> None:
 
 
 def plot_category_error() -> None:
-    category = pd.read_csv(PROCESSED_DIR / "model_error_by_category.csv")
+    category = pd.read_csv(ROOT / "outputs" / "07_evaluate_results_and_case_studies" / "model_error_by_category.csv")
     best_model = (
-        pd.read_csv(PROCESSED_DIR / "model_comparison_test.csv")
+        pd.read_csv(ROOT / "outputs" / "06_train_gnn_ablation_models" / "model_comparison_test.csv")
         .sort_values("mae")
         .iloc[0]["model"]
     )
@@ -78,8 +78,8 @@ def plot_category_error() -> None:
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    baseline = pd.read_csv(PROCESSED_DIR / "baseline_results.csv")
-    ablation = pd.read_csv(PROCESSED_DIR / "ablation_results.csv")
+    baseline = pd.read_csv(ROOT / "outputs" / "05_train_baselines" / "baseline_results.csv")
+    ablation = pd.read_csv(ROOT / "outputs" / "06_train_gnn_ablation_models" / "ablation_results.csv")
     comparison = pd.concat([baseline, ablation], ignore_index=True, sort=False)
     comparison = comparison.sort_values(["split", "mae", "model"]).reset_index(drop=True)
 
@@ -102,9 +102,9 @@ def main() -> None:
         if col in test_table.columns:
             test_table[col] = test_table[col].fillna("")
 
-    case_studies = pd.read_csv(PROCESSED_DIR / "case_study_results.csv")
-    category_metrics = pd.read_csv(PROCESSED_DIR / "model_error_by_category.csv")
-    ticker_metrics = pd.read_csv(PROCESSED_DIR / "model_error_by_ticker.csv")
+    case_studies = pd.read_csv(ROOT / "outputs" / "07_evaluate_results_and_case_studies" / "case_study_results.csv")
+    category_metrics = pd.read_csv(ROOT / "outputs" / "07_evaluate_results_and_case_studies" / "model_error_by_category.csv")
+    ticker_metrics = pd.read_csv(ROOT / "outputs" / "07_evaluate_results_and_case_studies" / "model_error_by_ticker.csv")
 
     save_csv(comparison, "table_all_model_metrics.csv")
     save_csv(test_table, "table_model_comparison_test.csv")

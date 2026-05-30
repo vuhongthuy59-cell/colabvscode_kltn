@@ -9,9 +9,9 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
-OUT_DIR = DATA_DIR / "processed"
+OUT_DIR = ROOT / "outputs" / "03_build_company_relationships"
 
-METADATA_FILE = DATA_DIR / "processed" / "ticker_metadata.csv"
+METADATA_FILE = ROOT / "outputs" / "01_build_price_dataset" / "ticker_metadata.csv"
 RELATIONSHIP_FILE = DATA_DIR / "data_origial" / "relationships.xlsx"
 
 DEFAULT_SAME_GROUP_WEIGHT = 0.80

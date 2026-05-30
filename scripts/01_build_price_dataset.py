@@ -17,7 +17,7 @@ from data_config import (
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
-OUT_DIR = DATA_DIR / "processed"
+OUT_DIR = ROOT / "outputs" / "01_build_price_dataset"
 
 UNIVERSE_FILE = DATA_DIR / "data_origial" / "universe.csv"
 PRICE_FILE = DATA_DIR / "data_origial" / "Stock_Price_2022-2025.csv"
