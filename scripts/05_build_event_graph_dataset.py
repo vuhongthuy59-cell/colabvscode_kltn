@@ -19,6 +19,7 @@ FEATURE_FILE = local_output("01_price_data") / "stock_features.csv"
 LOG_RETURN_FILE = local_output("01_price_data") / "master_log_return.csv"
 NEWS_ARTICLES_FILE = local_output("02_news_data") / "news_articles.csv"
 NEWS_MENTIONS_FILE = local_output("02_news_data") / "news_mentions.csv"
+NEWS_EMBEDDING_FILE = local_output("02_news_data") / "news_title_embedding_pca.csv"
 RELATIONSHIP_FILE = local_output("04_company_relationships") / "company_relationships.csv"
 TICKER_METADATA_FILE = local_output("01_price_data") / "ticker_metadata.csv"
 STOCK_MICRO_FILE = DATA_DIR / "processed" / "stock_micro_features.csv"
@@ -129,6 +130,44 @@ def load_optional_micro_features(dates: list[str], tickers: list[str]) -> tuple[
     stacked = np.stack(matrices, axis=2)
     stacked = np.nan_to_num(stacked, nan=0.0, posinf=0.0, neginf=0.0).astype(np.float32)
     return stacked, names
+
+
+def load_optional_news_embeddings() -> tuple[dict[str, np.ndarray], list[str]]:
+    """Load compressed PhoBERT title embeddings if available.
+
+    The raw 768-dimensional PhoBERT vectors should be compressed first,
+    for example to 64 PCA components, before entering the graph dataset.
+    """
+    if not NEWS_EMBEDDING_FILE.exists():
+        return {}, []
+
+    embeddings = pd.read_csv(NEWS_EMBEDDING_FILE)
+    if "article_id" not in embeddings.columns:
+        raise ValueError(f"{NEWS_EMBEDDING_FILE} must contain article_id")
+
+    embedding_cols = [col for col in embeddings.columns if col.startswith("phobert_pca_")]
+    if not embedding_cols:
+        raise ValueError(f"{NEWS_EMBEDDING_FILE} must contain phobert_pca_* columns")
+    if len(embedding_cols) > 128:
+        raise ValueError("PhoBERT PCA embedding must be compressed to <= 128 dimensions before entering GNN")
+
+    embeddings["article_id"] = embeddings["article_id"].astype(str)
+    values = embeddings[embedding_cols].to_numpy(dtype=np.float32)
+    values = np.nan_to_num(values, nan=0.0, posinf=0.0, neginf=0.0).astype(np.float32)
+    return dict(zip(embeddings["article_id"], values, strict=False)), embedding_cols
+
+
+def aggregate_article_embeddings(
+    article_ids: list[str],
+    embedding_by_article: dict[str, np.ndarray],
+    dim: int,
+) -> np.ndarray:
+    if dim == 0:
+        return np.zeros(0, dtype=np.float32)
+    rows = [embedding_by_article[article_id] for article_id in article_ids if article_id in embedding_by_article]
+    if not rows:
+        return np.zeros(dim, dtype=np.float32)
+    return np.mean(np.vstack(rows).astype(np.float32), axis=0).astype(np.float32)
 
 def load_industry_features(tickers: list[str]) -> tuple[np.ndarray, list[str], list[str]]:
     metadata = pd.read_csv(TICKER_METADATA_FILE)
@@ -397,6 +436,7 @@ def main() -> None:
     articles = pd.read_csv(NEWS_ARTICLES_FILE)
     mentions = pd.read_csv(NEWS_MENTIONS_FILE)
     relationships = pd.read_csv(RELATIONSHIP_FILE)
+    embedding_by_article, news_embedding_feature_names = load_optional_news_embeddings()
 
     articles["event_trading_date"] = articles["event_trading_date"].astype(str)
     articles = articles[articles["is_firm_specific"].eq(1)].copy()
@@ -468,6 +508,7 @@ def main() -> None:
         relevance = np.zeros(len(tickers), dtype=np.float32)
         primary = np.zeros(len(tickers), dtype=np.float32)
         mention_count = np.zeros(len(tickers), dtype=np.float32)
+        news_embedding = np.zeros((len(tickers), len(news_embedding_feature_names)), dtype=np.float32)
         target_mask = np.zeros(len(tickers), dtype=bool)
 
         event_target_idx = ticker_to_idx[ticker]
@@ -476,6 +517,12 @@ def main() -> None:
         relevance[event_target_idx] = float(event.max_relevance_score)
         primary[event_target_idx] = float(event.primary_news_count)
         mention_count[event_target_idx] = float(event.mention_count_sum)
+        if news_embedding_feature_names:
+            news_embedding[event_target_idx] = aggregate_article_embeddings(
+                article_ids,
+                embedding_by_article,
+                len(news_embedding_feature_names),
+            )
         target_mask[event_target_idx] = True
 
         if not direct_nodes:
@@ -595,6 +642,7 @@ def main() -> None:
                 primary.reshape(-1, 1),
                 mention_count.reshape(-1, 1),
                 category_one_hot,
+                news_embedding,
                 return_shock.reshape(-1, 1),
                 volatility_shock.reshape(-1, 1),
                 volume_shock.reshape(-1, 1),
@@ -707,6 +755,7 @@ def main() -> None:
             "mention_count",
         ]
         + [f"category_{category}" for category in categories],
+        "news_embedding_feature_names": news_embedding_feature_names,
         "shock_feature_names": [
             "return_shock",
             "volatility_shock",
@@ -735,6 +784,7 @@ def main() -> None:
         + schema["industry_feature_names"]
         + schema["macro_feature_names"]
         + schema["news_feature_names"]
+        + schema["news_embedding_feature_names"]
         + schema["shock_feature_names"]
         + schema["exposure_feature_names"]
     )

@@ -10,6 +10,7 @@ The project is organized as a standard forecasting workflow:
 config
 -> price data preparation
 -> news data preparation
+-> optional PhoBERT title embedding on Colab
 -> news labeler validation
 -> company relationship preparation
 -> event graph dataset construction
@@ -28,6 +29,7 @@ config
 | 00 | VSCode | `project_config.py` | Shared path/data-scope configuration |
 | 01 | VSCode/local | `01_prepare_price_data.py` | `outputs/local/01_price_data/` |
 | 02 | VSCode/local | `02_prepare_news_data.py` | `outputs/local/02_news_data/` |
+| 06B | Google Colab/GPU | `colab/06_phobert_embedding_colab.ipynb` | `outputs/local/02_news_data/news_title_embedding_pca.csv` |
 | 03 | VSCode/local | `03_train_news_labeler.py` | `outputs/local/03_news_labeler/` |
 | 04 | VSCode/local | `04_prepare_company_relationships.py` | `outputs/local/04_company_relationships/` |
 | 05 | VSCode/local | `05_build_event_graph_dataset.py` | `outputs/local/05_event_graph_dataset/` |
@@ -47,6 +49,7 @@ outputs/
   local/
     01_price_data/
     02_news_data/
+      news_title_embedding_pca.csv  # optional PhoBERT PCA input for graph builder
     03_news_labeler/
     04_company_relationships/
     05_event_graph_dataset/
@@ -67,6 +70,12 @@ outputs/
 # VSCode/local: data correctness and light baselines
 python scripts\01_prepare_price_data.py
 python scripts\02_prepare_news_data.py
+
+# Google Colab/GPU optional: create PhoBERT PCA title embeddings
+# Open and run: colab/06_phobert_embedding_colab.ipynb
+# Then copy Drive output back to:
+# outputs/local/02_news_data/news_title_embedding_pca.csv
+
 python scripts\03_train_news_labeler.py
 python scripts\04_prepare_company_relationships.py
 python scripts\05_build_event_graph_dataset.py
