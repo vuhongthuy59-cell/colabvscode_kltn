@@ -5,10 +5,11 @@ from pathlib import Path
 import pandas as pd
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
+from project_config import colab_output, local_output, report_output
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
-OUT_DIR = ROOT / "outputs" / "09_model_evaluation"
+OUT_DIR = report_output("09_model_evaluation")
 
 
 def rmse(y_true: pd.Series, y_pred: pd.Series) -> float:
@@ -16,9 +17,9 @@ def rmse(y_true: pd.Series, y_pred: pd.Series) -> float:
 
 
 def add_context(predictions: pd.DataFrame) -> pd.DataFrame:
-    snapshot_index = pd.read_csv(ROOT / "outputs" / "05_event_graph_dataset" / "snapshot_index.csv")
-    articles = pd.read_csv(ROOT / "outputs" / "02_news_data" / "news_articles.csv")
-    ticker_map = pd.read_json(ROOT / "outputs" / "05_event_graph_dataset" / "ticker_to_idx.json", typ="series")
+    snapshot_index = pd.read_csv(local_output("05_event_graph_dataset") / "snapshot_index.csv")
+    articles = pd.read_csv(local_output("02_news_data") / "news_articles.csv")
+    ticker_map = pd.read_json(local_output("05_event_graph_dataset") / "ticker_to_idx.json", typ="series")
     idx_to_ticker = {int(idx): ticker for ticker, idx in ticker_map.items()}
 
     edge_count_cols = [col for col in snapshot_index.columns if col.startswith("num_edges_")]
@@ -92,10 +93,10 @@ def build_case_studies(df: pd.DataFrame) -> pd.DataFrame:
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    ablation_predictions = pd.read_csv(ROOT / "outputs" / "07_gnn_ablation_models" / "ablation_predictions.csv")
-    baseline_predictions = pd.read_csv(ROOT / "outputs" / "06_baseline_models" / "baseline_predictions.csv")
+    ablation_predictions = pd.read_csv(colab_output("07_gnn_ablation_models") / "ablation_predictions.csv")
+    baseline_predictions = pd.read_csv(local_output("06_baseline_models") / "baseline_predictions.csv")
     frames = [baseline_predictions, ablation_predictions]
-    hybrid_file = ROOT / "outputs" / "12_hybrid_mlp_gat" / "hybrid_predictions.csv"
+    hybrid_file = colab_output("12_hybrid_mlp_gat") / "hybrid_predictions.csv"
     if hybrid_file.exists():
         frames.append(pd.read_csv(hybrid_file))
     predictions = pd.concat(frames, ignore_index=True)

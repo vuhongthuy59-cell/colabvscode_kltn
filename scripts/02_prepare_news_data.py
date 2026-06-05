@@ -15,18 +15,19 @@ from project_config import (
     MAIN_START_DATE,
     active_dataset_scope,
     include_2026_append,
+    local_output,
 )
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
-OUT_DIR = ROOT / "outputs" / "02_news_data"
+OUT_DIR = local_output("02_news_data")
 
 NEWS_FILE = DATA_DIR / "data_origial" / "News_2022_2025_2.xlsx"
 NEWS_APPEND_FILE = DATA_DIR / "data_origial" / "Vietstock_News_2025_2026_append.xlsx"
 NEWS_CRAWL_FILE = DATA_DIR / "data_origial" / "Vietstock_News_2022_2025_crawl.xlsx"
-UNIVERSE_FILE = ROOT / "outputs" / "01_price_data" / "ticker_list.csv"
-MASTER_CLOSE_FILE = ROOT / "outputs" / "01_price_data" / "master_close.csv"
+UNIVERSE_FILE = local_output("01_price_data") / "ticker_list.csv"
+MASTER_CLOSE_FILE = local_output("01_price_data") / "master_close.csv"
 
 
 MANUAL_ALIASES: dict[str, tuple[str, list[str]]] = {

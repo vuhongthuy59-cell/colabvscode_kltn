@@ -10,15 +10,16 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
+from project_config import local_output
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
-OUT_DIR = ROOT / "outputs" / "06_baseline_models"
+OUT_DIR = local_output("06_baseline_models")
 
-SNAPSHOT_FILE = ROOT / "outputs" / "05_event_graph_dataset" / "graph_snapshots.pt"
-SNAPSHOT_INDEX_FILE = ROOT / "outputs" / "05_event_graph_dataset" / "snapshot_index.csv"
-EDGE_TYPE_MAP_FILE = ROOT / "outputs" / "05_event_graph_dataset" / "edge_type_map.json"
-FEATURE_SCHEMA_FILE = ROOT / "outputs" / "05_event_graph_dataset" / "node_feature_schema.json"
+SNAPSHOT_FILE = local_output("05_event_graph_dataset") / "graph_snapshots.pt"
+SNAPSHOT_INDEX_FILE = local_output("05_event_graph_dataset") / "snapshot_index.csv"
+EDGE_TYPE_MAP_FILE = local_output("05_event_graph_dataset") / "edge_type_map.json"
+FEATURE_SCHEMA_FILE = local_output("05_event_graph_dataset") / "node_feature_schema.json"
 
 RANDOM_STATE = 42
 GNN_EPOCHS = 30

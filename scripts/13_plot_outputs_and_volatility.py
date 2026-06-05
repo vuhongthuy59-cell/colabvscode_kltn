@@ -5,9 +5,10 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from project_config import colab_output, local_output, report_output
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_DIR = ROOT / "outputs" / "10_report_assets"
+OUT_DIR = report_output("10_report_assets")
 
 
 def save_fig(name: str) -> None:
@@ -20,9 +21,9 @@ def save_fig(name: str) -> None:
 def load_predictions() -> pd.DataFrame:
     frames = []
     files = [
-        ROOT / "outputs" / "06_baseline_models" / "baseline_predictions.csv",
-        ROOT / "outputs" / "07_gnn_ablation_models" / "ablation_predictions.csv",
-        ROOT / "outputs" / "12_hybrid_mlp_gat" / "hybrid_predictions.csv",
+        local_output("06_baseline_models") / "baseline_predictions.csv",
+        colab_output("07_gnn_ablation_models") / "ablation_predictions.csv",
+        colab_output("12_hybrid_mlp_gat") / "hybrid_predictions.csv",
     ]
     for file in files:
         if file.exists():
@@ -110,8 +111,8 @@ def plot_prediction_scatter(predictions: pd.DataFrame) -> None:
 
 
 def main() -> None:
-    snapshot_index = pd.read_csv(ROOT / "outputs" / "05_event_graph_dataset" / "snapshot_index.csv")
-    metrics = pd.read_csv(ROOT / "outputs" / "11_regression_metrics" / "r2_metrics_test.csv")
+    snapshot_index = pd.read_csv(local_output("05_event_graph_dataset") / "snapshot_index.csv")
+    metrics = pd.read_csv(report_output("11_regression_metrics") / "r2_metrics_test.csv")
     predictions = load_predictions()
 
     plot_target_distribution(snapshot_index)

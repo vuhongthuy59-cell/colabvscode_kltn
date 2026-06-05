@@ -5,11 +5,11 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from project_config import colab_output, local_output, report_output
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
-PROCESSED_DIR = ROOT / "outputs"
-OUT_DIR = ROOT / "outputs" / "10_report_assets"
+OUT_DIR = report_output("10_report_assets")
 
 
 def save_csv(df: pd.DataFrame, name: str) -> None:
@@ -39,7 +39,7 @@ def plot_model_metrics(df: pd.DataFrame) -> None:
 
 
 def plot_rf_importance() -> None:
-    importance = pd.read_csv(ROOT / "outputs" / "06_baseline_models" / "rf_feature_importance.csv").head(15).sort_values("importance")
+    importance = pd.read_csv(local_output("06_baseline_models") / "rf_feature_importance.csv").head(15).sort_values("importance")
     plt.figure(figsize=(9, 6))
     plt.barh(importance["feature"], importance["importance"])
     plt.xlabel("Importance")
@@ -48,7 +48,7 @@ def plot_rf_importance() -> None:
 
 
 def plot_training_curves() -> None:
-    log = pd.read_csv(ROOT / "outputs" / "07_gnn_ablation_models" / "full_model_training_log.csv")
+    log = pd.read_csv(colab_output("07_gnn_ablation_models") / "full_model_training_log.csv")
     plt.figure(figsize=(10, 5))
     for model, group in log.groupby("model"):
         plt.plot(group["epoch"], group["val_mae"], label=model)
@@ -60,7 +60,7 @@ def plot_training_curves() -> None:
 
 
 def plot_category_error() -> None:
-    category = pd.read_csv(ROOT / "outputs" / "09_model_evaluation" / "model_error_by_category.csv")
+    category = pd.read_csv(report_output("09_model_evaluation") / "model_error_by_category.csv")
     best_model = category[category["model"].notna()].groupby("model")["mae"].mean().sort_values().index[0]
     data = category[category["model"].eq(best_model)].sort_values("mae")
     plt.figure(figsize=(10, 5))
@@ -74,10 +74,10 @@ def plot_category_error() -> None:
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    baseline = pd.read_csv(ROOT / "outputs" / "06_baseline_models" / "baseline_results.csv")
-    ablation = pd.read_csv(ROOT / "outputs" / "07_gnn_ablation_models" / "ablation_results.csv")
+    baseline = pd.read_csv(local_output("06_baseline_models") / "baseline_results.csv")
+    ablation = pd.read_csv(colab_output("07_gnn_ablation_models") / "ablation_results.csv")
     frames = [baseline, ablation]
-    hybrid_file = ROOT / "outputs" / "12_hybrid_mlp_gat" / "hybrid_results.csv"
+    hybrid_file = colab_output("12_hybrid_mlp_gat") / "hybrid_results.csv"
     if hybrid_file.exists():
         frames.append(pd.read_csv(hybrid_file))
     comparison = pd.concat(frames, ignore_index=True, sort=False)
@@ -102,9 +102,9 @@ def main() -> None:
         if col in test_table.columns:
             test_table[col] = test_table[col].fillna("")
 
-    case_studies = pd.read_csv(ROOT / "outputs" / "09_model_evaluation" / "case_study_results.csv")
-    category_metrics = pd.read_csv(ROOT / "outputs" / "09_model_evaluation" / "model_error_by_category.csv")
-    ticker_metrics = pd.read_csv(ROOT / "outputs" / "09_model_evaluation" / "model_error_by_ticker.csv")
+    case_studies = pd.read_csv(report_output("09_model_evaluation") / "case_study_results.csv")
+    category_metrics = pd.read_csv(report_output("09_model_evaluation") / "model_error_by_category.csv")
+    ticker_metrics = pd.read_csv(report_output("09_model_evaluation") / "model_error_by_ticker.csv")
 
     save_csv(comparison, "table_all_model_metrics.csv")
     save_csv(test_table, "table_model_comparison_test.csv")

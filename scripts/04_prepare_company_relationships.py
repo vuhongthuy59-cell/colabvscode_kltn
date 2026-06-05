@@ -6,12 +6,13 @@ from pathlib import Path
 
 import pandas as pd
 
+from project_config import local_output
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
-OUT_DIR = ROOT / "outputs" / "04_company_relationships"
+OUT_DIR = local_output("04_company_relationships")
 
-METADATA_FILE = ROOT / "outputs" / "01_price_data" / "ticker_metadata.csv"
+METADATA_FILE = local_output("01_price_data") / "ticker_metadata.csv"
 RELATIONSHIP_FILE = DATA_DIR / "data_origial" / "relationships.xlsx"
 OWNERSHIP_GRAPH_FILE = DATA_DIR / "data_2" / "vietnam_ownership_graph_dataset_v1.xlsx"
 

@@ -12,12 +12,13 @@ from project_config import (
     MAIN_START_DATE,
     active_dataset_scope,
     include_2026_append,
+    local_output,
 )
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
-OUT_DIR = ROOT / "outputs" / "01_price_data"
+OUT_DIR = local_output("01_price_data")
 
 UNIVERSE_FILE = DATA_DIR / "data_origial" / "universe.csv"
 PRICE_FILE = DATA_DIR / "data_origial" / "Stock_Price_2022-2025.csv"

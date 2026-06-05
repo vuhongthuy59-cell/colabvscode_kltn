@@ -8,18 +8,19 @@ import numpy as np
 import pandas as pd
 import torch
 
+from project_config import local_output
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
-OUT_DIR = ROOT / "outputs" / "05_event_graph_dataset"
+OUT_DIR = local_output("05_event_graph_dataset")
 
-TICKER_FILE = ROOT / "outputs" / "01_price_data" / "ticker_list.csv"
-FEATURE_FILE = ROOT / "outputs" / "01_price_data" / "stock_features.csv"
-LOG_RETURN_FILE = ROOT / "outputs" / "01_price_data" / "master_log_return.csv"
-NEWS_ARTICLES_FILE = ROOT / "outputs" / "02_news_data" / "news_articles.csv"
-NEWS_MENTIONS_FILE = ROOT / "outputs" / "02_news_data" / "news_mentions.csv"
-RELATIONSHIP_FILE = ROOT / "outputs" / "04_company_relationships" / "company_relationships.csv"
-TICKER_METADATA_FILE = ROOT / "outputs" / "01_price_data" / "ticker_metadata.csv"
+TICKER_FILE = local_output("01_price_data") / "ticker_list.csv"
+FEATURE_FILE = local_output("01_price_data") / "stock_features.csv"
+LOG_RETURN_FILE = local_output("01_price_data") / "master_log_return.csv"
+NEWS_ARTICLES_FILE = local_output("02_news_data") / "news_articles.csv"
+NEWS_MENTIONS_FILE = local_output("02_news_data") / "news_mentions.csv"
+RELATIONSHIP_FILE = local_output("04_company_relationships") / "company_relationships.csv"
+TICKER_METADATA_FILE = local_output("01_price_data") / "ticker_metadata.csv"
 STOCK_MICRO_FILE = DATA_DIR / "processed" / "stock_micro_features.csv"
 MARKET_MACRO_FILE = DATA_DIR / "processed" / "market_macro_features.csv"
 FEATURE_SCHEMA_FILE = OUT_DIR / "node_feature_schema.json"

@@ -5,9 +5,10 @@ from pathlib import Path
 import pandas as pd
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
+from project_config import colab_output, local_output, report_output
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_DIR = ROOT / "outputs" / "11_regression_metrics"
+OUT_DIR = report_output("11_regression_metrics")
 
 
 def compute_group_metrics(df: pd.DataFrame, group_cols: list[str], source: str) -> pd.DataFrame:
@@ -32,17 +33,17 @@ def compute_group_metrics(df: pd.DataFrame, group_cols: list[str], source: str) 
 def load_metric_frames() -> list[pd.DataFrame]:
     frames = []
 
-    baseline_file = ROOT / "outputs" / "06_baseline_models" / "baseline_predictions.csv"
+    baseline_file = local_output("06_baseline_models") / "baseline_predictions.csv"
     if baseline_file.exists():
         baseline = pd.read_csv(baseline_file)
         frames.append(compute_group_metrics(baseline, ["model", "split"], "06_baseline_models"))
 
-    ablation_file = ROOT / "outputs" / "07_gnn_ablation_models" / "ablation_predictions.csv"
+    ablation_file = colab_output("07_gnn_ablation_models") / "ablation_predictions.csv"
     if ablation_file.exists():
         ablation = pd.read_csv(ablation_file)
         frames.append(compute_group_metrics(ablation, ["model", "split"], "07_gnn_ablation_models"))
 
-    hybrid_file = ROOT / "outputs" / "12_hybrid_mlp_gat" / "hybrid_predictions.csv"
+    hybrid_file = colab_output("12_hybrid_mlp_gat") / "hybrid_predictions.csv"
     if hybrid_file.exists():
         hybrid = pd.read_csv(hybrid_file)
         frames.append(compute_group_metrics(hybrid, ["model", "split"], "12_hybrid_mlp_gat"))

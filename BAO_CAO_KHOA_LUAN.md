@@ -26,7 +26,7 @@
   Bước 1 - Chuẩn bị dữ liệu giá (01_prepare_price_data)
   ─────────────────────────────────────────────────────────
     • Input: universe.csv (118 cổ phiếu), Stock_Price_2022-2025.csv
-    • Output: 10 files vào outputs/01_price_data/
+    • Output: 10 files vào outputs/local/01_price_data/
     • Kiểm soát chất lượng dữ liệu:
         - Kiểm tra thiếu cột OHLCV bắt buộc
         - Kiểm tra missing trong open/high/low/close/volume
@@ -49,7 +49,7 @@
     • Xử lý: chuẩn hóa Unicode, loại bỏ crawl trùng (1.723 dòng)
     • Nhãn tin tức hiện tại: manual labels + mô hình học máy TF-IDF
       + Logistic Regression từ 6.062 nhãn tay
-    • Output: 3 files vào outputs/02_news_data/
+    • Output: 3 files vào outputs/local/02_news_data/
     • Kết quả:
         - 55.518 bài viết firm-specific (có gắn với mã CK)
         - 57.899 ticker mentions (ánh xạ công ty → mã)
@@ -78,13 +78,13 @@
     • Kết quả đánh giá trên holdout 20%:
          Category   Accuracy=0.9060  Macro F1=0.8859
          Sentiment  Accuracy=0.9662  Macro F1=0.8619
-    • Output: outputs/03_news_labeler/
+    • Output: outputs/local/03_news_labeler/
 
 
   Bước 4 - Chuẩn bị quan hệ doanh nghiệp (04_prepare_company_relationships)
   ──────────────────────────────────────────────────────────────
     • Input: relationships.xlsx (2 sheet: sector + quan hệ)
-    • Output: 8 files vào outputs/04_company_relationships/
+    • Output: 8 files vào outputs/local/04_company_relationships/
     • Kết quả:
         - 1.500 cạnh đồ thị quan hệ chính dùng cho GNN
         - Phân bố:
@@ -117,7 +117,7 @@
             max_abs_return_5
         - Không clip target y vì volatility cao là tín hiệu cần dự báo
         - Output bổ sung: graph_feature_quality_report.csv
-    • Output: 8 files vào outputs/05_event_graph_dataset/
+    • Output: 8 files vào outputs/local/05_event_graph_dataset/
     • Kết quả:
         - 23.705 snapshot đồ thị
         - Mỗi snapshot = 1 mã cổ phiếu trong 1 ngày sự kiện
@@ -192,7 +192,7 @@
   Bước 11 - Final Regression Metrics (11_compute_regression_metrics)
   ─────────────────────────────────────────────────────────────
     • Tính MAE, RMSE và R2 từ prediction files
-    • Output: outputs/11_regression_metrics/
+    • Output: outputs/report/11_regression_metrics/
 
 
 3. KẾT LUẬN CHÍNH

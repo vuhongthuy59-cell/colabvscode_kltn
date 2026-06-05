@@ -11,12 +11,13 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import FeatureUnion, Pipeline
 
+from project_config import local_output
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
-OUT_DIR = ROOT / "outputs" / "03_news_labeler"
+OUT_DIR = local_output("03_news_labeler")
 
-ARTICLES_FILE = ROOT / "outputs" / "02_news_data" / "news_articles.csv"
+ARTICLES_FILE = local_output("02_news_data") / "news_articles.csv"
 MANUAL_LABELS_FILE = DATA_DIR / "manual_labels.csv"
 
 RANDOM_STATE = 42

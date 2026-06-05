@@ -8,13 +8,14 @@ import pandas as pd
 import torch
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
+from project_config import colab_output, local_output
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_DIR = ROOT / "outputs" / "12_hybrid_mlp_gat"
+OUT_DIR = colab_output("12_hybrid_mlp_gat")
 
-SNAPSHOT_FILE = ROOT / "outputs" / "05_event_graph_dataset" / "graph_snapshots.pt"
-SNAPSHOT_INDEX_FILE = ROOT / "outputs" / "05_event_graph_dataset" / "snapshot_index.csv"
-EDGE_TYPE_MAP_FILE = ROOT / "outputs" / "05_event_graph_dataset" / "edge_type_map.json"
+SNAPSHOT_FILE = local_output("05_event_graph_dataset") / "graph_snapshots.pt"
+SNAPSHOT_INDEX_FILE = local_output("05_event_graph_dataset") / "snapshot_index.csv"
+EDGE_TYPE_MAP_FILE = local_output("05_event_graph_dataset") / "edge_type_map.json"
 
 RANDOM_STATE = 42
 EPOCHS = 25
