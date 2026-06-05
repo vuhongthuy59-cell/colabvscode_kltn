@@ -1,0 +1,22 @@
+metric,value,note
+input_ticker_date_events,31650,Aggregated ticker-date events built from firm-specific news mentions
+input_articles,55518,Firm-specific articles from news_articles.csv
+saved_snapshots,23705,Ticker-date event snapshots saved to graph_snapshots.pt
+skipped_events,7945,Ticker-date events skipped by temporal/data availability rules
+num_nodes,118,Fixed stock universe size
+num_node_features,76,price + micro + industry + macro + news + category + exposure
+category_count,10,News category one-hot width
+unique_event_dates,740,Correlation cache keys
+edge_type_count,6,"positive/negative correlation, ownership, value-chain, sector, news co-mention"
+corr_positive_top_k,10,Maximum positive-correlation neighbors kept per source node
+corr_negative_top_k,5,Maximum negative-correlation neighbors kept per source node
+sector_top_k,5,Maximum same-sector correlation neighbors kept per source node
+target_name,log_abnormal_volatility_5d,Regression target used in graph snapshots
+mean_edges_per_snapshot,2284.7778949588696,Average total edges
+min_edges_per_snapshot,2220,Minimum total edges
+max_edges_per_snapshot,2653,Maximum total edges
+mean_target_count,1.0,Average target tickers per ticker-date event
+skipped_insufficient_252d_correlation_history,7029,Skip reason count
+skipped_insufficient_20d_feature_history,696,Skip reason count
+skipped_insufficient_5d_future_label,166,Skip reason count
+skipped_insufficient_target_future_returns,54,Skip reason count

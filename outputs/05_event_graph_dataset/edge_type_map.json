@@ -1,0 +1,8 @@
+{
+  "corr_positive_top10": 0,
+  "corr_negative_top5": 1,
+  "ownership": 2,
+  "value_chain_curated": 3,
+  "sector_top5_only": 4,
+  "news_co_mention": 5
+}

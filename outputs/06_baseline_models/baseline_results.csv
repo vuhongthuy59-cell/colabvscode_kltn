@@ -1,0 +1,9 @@
+model,split,input,graph,mae,rmse,note
+Linear Regression,test,tabular price/news features,no,0.5297498106956482,0.650513768196106,baseline linear tabular model
+Random Forest,test,tabular price/news features,no,0.5337274670600891,0.6520209312438965,nonlinear tabular ML baseline
+Rolling Volatility,test,historical volatility only,no,0.6026085019111633,0.7035965919494629,prediction = rolling_vol_20 at T-1
+GNN Correlation Only,test,price features only,price_correlation only,0.6197924017906189,0.7475266456604004,one-hop weighted correlation message passing; no news/relationship edges
+Linear Regression,validation,tabular price/news features,no,0.5235164761543274,0.6567163467407227,baseline linear tabular model
+Random Forest,validation,tabular price/news features,no,0.550392746925354,0.6792468428611755,nonlinear tabular ML baseline
+GNN Correlation Only,validation,price features only,price_correlation only,0.6029956936836243,0.7292289733886719,one-hop weighted correlation message passing; no news/relationship edges
+Rolling Volatility,validation,historical volatility only,no,0.6792089343070984,0.8242351412773132,prediction = rolling_vol_20 at T-1

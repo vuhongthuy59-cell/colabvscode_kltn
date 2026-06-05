@@ -1,8 +1,0 @@
-{
-  "price_correlation": 0,
-  "parent_to_subsidiary": 1,
-  "subsidiary_to_parent": 2,
-  "same_group": 3,
-  "same_industry": 4,
-  "news_co_mention": 5
-}

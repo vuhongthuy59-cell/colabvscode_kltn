@@ -1,0 +1,19 @@
+model,config,split,feature_count,input_dim,mean_topk_edges_per_target,mae,rmse,note
+Ridge_a10,top30_graph,test,30,186,19.851979667024203,0.00873412936925888,0.011485890485346317,Regularized linear model using tabular self features plus top-k graph interaction features
+Ridge_a10,all66_graph,test,66,330,19.851979667024203,0.008743937127292156,0.01151747815310955,Regularized linear model using tabular self features plus top-k graph interaction features
+Ridge_a10,top50_graph,test,50,266,19.851979667024203,0.008748789317905903,0.011516569182276726,Regularized linear model using tabular self features plus top-k graph interaction features
+Ridge_a1,top30_graph,test,30,186,19.851979667024203,0.008755027316510677,0.011505916714668274,Regularized linear model using tabular self features plus top-k graph interaction features
+Ridge_a1,all66_graph,test,66,330,19.851979667024203,0.008759802207350731,0.011534232646226883,Regularized linear model using tabular self features plus top-k graph interaction features
+Ridge_a1,top50_graph,test,50,266,19.851979667024203,0.008764754049479961,0.011533569544553757,Regularized linear model using tabular self features plus top-k graph interaction features
+Ridge_a0.1,top30_graph,test,30,186,19.851979667024203,0.008782460354268551,0.011534896679222584,Regularized linear model using tabular self features plus top-k graph interaction features
+Ridge_a0.1,all66_graph,test,66,330,19.851979667024203,0.00878280121833086,0.011554500088095665,Regularized linear model using tabular self features plus top-k graph interaction features
+Ridge_a0.1,top50_graph,test,50,266,19.851979667024203,0.008786909282207489,0.011553642340004444,Regularized linear model using tabular self features plus top-k graph interaction features
+Ridge_a10,top30_graph,validation,30,186,19.851979667024203,0.010174701921641827,0.01478224154561758,Regularized linear model using tabular self features plus top-k graph interaction features
+Ridge_a1,top30_graph,validation,30,186,19.851979667024203,0.010198083706200123,0.014812025241553783,Regularized linear model using tabular self features plus top-k graph interaction features
+Ridge_a0.1,top30_graph,validation,30,186,19.851979667024203,0.010203332640230656,0.014817668125033379,Regularized linear model using tabular self features plus top-k graph interaction features
+Ridge_a10,top50_graph,validation,50,266,19.851979667024203,0.010221953503787518,0.014802917838096619,Regularized linear model using tabular self features plus top-k graph interaction features
+Ridge_a10,all66_graph,validation,66,330,19.851979667024203,0.010222040116786957,0.01480164285749197,Regularized linear model using tabular self features plus top-k graph interaction features
+Ridge_a1,top50_graph,validation,50,266,19.851979667024203,0.010245432145893574,0.014832246117293835,Regularized linear model using tabular self features plus top-k graph interaction features
+Ridge_a1,all66_graph,validation,66,330,19.851979667024203,0.010245581157505512,0.014831053093075752,Regularized linear model using tabular self features plus top-k graph interaction features
+Ridge_a0.1,all66_graph,validation,66,330,19.851979667024203,0.010248464532196522,0.014835353940725327,Regularized linear model using tabular self features plus top-k graph interaction features
+Ridge_a0.1,top50_graph,validation,50,266,19.851979667024203,0.01024855487048626,0.014836844056844711,Regularized linear model using tabular self features plus top-k graph interaction features

@@ -1,0 +1,19 @@
+model,split,input,graph,mae,rmse,note,price_features,news_features,relationship_edges,co_mention_edges,input_dim
+Linear Regression,test,tabular price/news features,no,0.5297498106956482,0.650513768196106,baseline linear tabular model,,,,,
+Random Forest,test,tabular price/news features,no,0.5337274670600891,0.6520209312438965,nonlinear tabular ML baseline,,,,,
+GNN + News,test,,,0.5849257707595825,0.7154883742332458,,Yes,Yes,No,No,150.0
+Hybrid MLP-GAT,test,full node features + graph attention neighbors,signed top-k + ownership/value-chain/sector/news,0.5896052434152511,0.7311032132619025,Hybrid self MLP with edge-type-aware neighbor attention; weighted MAE loss,,,,,
+Full Model,test,,,0.5924167037010193,0.724355161190033,,Yes,Yes,Yes,Yes,152.0
+Rolling Volatility,test,historical volatility only,no,0.6026085019111633,0.7035965919494629,prediction = rolling_vol_20 at T-1,,,,,
+GNN Correlation Only,test,price features only,price_correlation only,0.6197924017906189,0.7475266456604004,one-hop weighted correlation message passing; no news/relationship edges,,,,,
+GNN + Relationship,test,,,0.6213350296020508,0.7480146884918213,,Yes,No,Yes,No,102.0
+GNN Correlation Only,test,,,0.6221268773078918,0.7495136857032776,,Yes,No,No,No,102.0
+Linear Regression,validation,tabular price/news features,no,0.5235164761543274,0.6567163467407227,baseline linear tabular model,,,,,
+Random Forest,validation,tabular price/news features,no,0.550392746925354,0.6792468428611755,nonlinear tabular ML baseline,,,,,
+GNN + News,validation,,,0.5609291791915894,0.7080940008163452,,Yes,Yes,No,No,150.0
+Hybrid MLP-GAT,validation,full node features + graph attention neighbors,signed top-k + ownership/value-chain/sector/news,0.5746695671531685,0.7232787219054682,Hybrid self MLP with edge-type-aware neighbor attention; weighted MAE loss,,,,,
+Full Model,validation,,,0.584449052810669,0.7223274111747742,,Yes,Yes,Yes,Yes,152.0
+GNN Correlation Only,validation,price features only,price_correlation only,0.6029956936836243,0.7292289733886719,one-hop weighted correlation message passing; no news/relationship edges,,,,,
+GNN Correlation Only,validation,,,0.6066861152648926,0.7322900891304016,,Yes,No,No,No,102.0
+GNN + Relationship,validation,,,0.6103348135948181,0.7332701683044434,,Yes,No,Yes,No,102.0
+Rolling Volatility,validation,historical volatility only,no,0.6792089343070984,0.8242351412773132,prediction = rolling_vol_20 at T-1,,,,,

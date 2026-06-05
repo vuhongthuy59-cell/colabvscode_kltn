@@ -1,0 +1,3 @@
+model,split,input,graph,mae,rmse,note
+Hybrid MLP-GAT,test,full node features + graph attention neighbors,signed top-k + ownership/value-chain/sector/news,0.5896052434152511,0.7311032132619025,Hybrid self MLP with edge-type-aware neighbor attention; weighted MAE loss
+Hybrid MLP-GAT,validation,full node features + graph attention neighbors,signed top-k + ownership/value-chain/sector/news,0.5746695671531685,0.7232787219054682,Hybrid self MLP with edge-type-aware neighbor attention; weighted MAE loss

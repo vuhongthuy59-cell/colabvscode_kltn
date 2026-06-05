@@ -1,0 +1,20 @@
+metric,value,note
+price_rows,117180,"Rows after date filtering, ticker filtering, and duplicate removal"
+feature_rows,117180,Rows used to build stock-level features
+duplicate_date_ticker_rows,0,Must be 0 after cleaning
+missing_ohlcv_values,0,Must be 0 before feature engineering
+close_le_zero_rows,0,Invalid price rows; should be 0
+open_le_zero_rows,0,Invalid price rows; should be 0
+high_lt_low_rows,0,Invalid OHLC range rows; should be 0
+open_or_close_outside_high_low_rows,3,Open/close outside the daily high-low range
+volume_negative_rows,0,Invalid volume rows; should be 0
+volume_zero_rows,0,Zero-volume rows are kept but reported
+log_return_missing_rows,118,Expected for first trading row per ticker
+rolling_vol_20_missing_rows,2360,Expected warm-up rows before 20 observations
+rolling_vol_60_missing_rows,7080,Expected warm-up rows before 60 observations
+volume_ratio_20_missing_rows,2242,Expected warm-up rows before 20 observations
+abs_log_return_gt_30pct_rows,0,Potential extreme daily moves or price-adjustment issues
+abs_log_return_gt_50pct_rows,0,High-priority outlier review candidates
+volume_ratio_20_gt_5_rows,245,Large volume spikes relative to 20-day average
+volume_ratio_20_gt_10_rows,16,Extreme volume spikes relative to 20-day average
+abnormal_volume_rows,7101,Rows where volume_ratio_20 > 2

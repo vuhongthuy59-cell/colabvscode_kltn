@@ -1,0 +1,13 @@
+model,split,mae,rmse,weights,note
+linear,test,0.00855024457197902,0.011369035071609484,linear,single model prediction
+rf,test,0.008598607934186743,0.011468522329016496,rf,single model prediction
+residual_top30,test,0.00874384367551749,0.011782948159877597,residual_top30,single model prediction
+validation_selected_blend,test,0.00877386198653811,0.011789960014210031,linear=0.0000; rf=0.0000; gnn_relationship=0.5800; residual_top30=0.0000; residual_top50=0.4200,nonnegative blend weights selected on validation MAE
+residual_top50,test,0.00878480145154646,0.011934272887921935,residual_top50,single model prediction
+gnn_relationship,test,0.008960752511344235,0.011921712367434613,gnn_relationship,single model prediction
+validation_selected_blend,validation,0.009149479011450202,0.013754952584839757,linear=0.0000; rf=0.0000; gnn_relationship=0.5800; residual_top30=0.0000; residual_top50=0.4200,nonnegative blend weights selected on validation MAE
+gnn_relationship,validation,0.009265750682026432,0.013824640097171692,gnn_relationship,single model prediction
+residual_top50,validation,0.009362136068107764,0.013982919158995763,residual_top50,single model prediction
+residual_top30,validation,0.009475794462739159,0.014084517062841844,residual_top30,single model prediction
+linear,validation,0.00969605320587597,0.013981587524657033,linear,single model prediction
+rf,validation,0.01000441348280201,0.014359016743992679,rf,single model prediction

@@ -1,0 +1,5 @@
+model,split,price_features,news_features,relationship_edges,co_mention_edges,mae,rmse,input_dim
+GNN + News,test,Yes,Yes,No,No,0.008943961933255196,0.011924897320568562,116
+GNN Correlation Only,test,Yes,No,No,No,0.008987728506326675,0.01209510862827301,88
+Full Model,test,Yes,Yes,Yes,Yes,0.009031064808368683,0.012013459578156471,118
+GNN + Relationship,test,Yes,No,Yes,No,0.009089226834475994,0.012149033136665821,88

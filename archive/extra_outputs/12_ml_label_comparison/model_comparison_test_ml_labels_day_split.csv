@@ -1,0 +1,9 @@
+model,input,graph,price_features,news_features,relationship_edges,co_mention_edges,mae,rmse,note
+Linear Regression,tabular price/news features,no,,,,,0.008729656226933,0.0116399489343166,baseline linear tabular model
+Random Forest,tabular price/news features,no,,,,,0.0087516326457262,0.0116613740101456,nonlinear tabular ML baseline
+GNN Correlation Only,,,Yes,No,No,No,0.009222344495356,0.0125314416363835,
+GNN Correlation Only,price features only,price_correlation only,,,,,0.0092223454266786,0.0125314416363835,one-hop weighted correlation message passing; no news/relationship edges
+GNN + Relationship,,,Yes,No,Yes,No,0.0093476679176092,0.0126850437372922,
+Rolling Volatility,historical volatility only,no,,,,,0.009365308098495,0.0120895812287926,prediction = rolling_vol_20 at T-1
+Full Model,,,Yes,Yes,Yes,Yes,0.0095289852470159,0.0128242578357458,
+GNN + News,,,Yes,Yes,No,No,0.0096242558211088,0.0130403479561209,

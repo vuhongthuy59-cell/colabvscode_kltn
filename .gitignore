@@ -12,6 +12,9 @@ build/
 # PyTorch model files
 *.pt
 
+# Large generated graph tensor; regenerate with scripts/05_build_event_graph_dataset.py
+outputs/05_event_graph_dataset/graph_snapshots.pt
+
 # Processed data (can be regenerated)
 data/processed/
 data/processed_backup/

@@ -1,0 +1,39 @@
+metric,value,note
+abs_return_mean_10_clipped,0,Feature cleaning count accumulated while building graph snapshots
+abs_return_mean_10_nonfinite_replaced,0,Feature cleaning count accumulated while building graph snapshots
+abs_return_mean_5_clipped,0,Feature cleaning count accumulated while building graph snapshots
+abs_return_mean_5_nonfinite_replaced,282,Feature cleaning count accumulated while building graph snapshots
+hist_returns_clipped,0,Feature cleaning count accumulated while building graph snapshots
+hist_returns_nonfinite_replaced,260613,Feature cleaning count accumulated while building graph snapshots
+macro_features_nonfinite_replaced,0,Feature cleaning count accumulated while building graph snapshots
+max_abs_return_5_clipped,0,Feature cleaning count accumulated while building graph snapshots
+max_abs_return_5_nonfinite_replaced,282,Feature cleaning count accumulated while building graph snapshots
+micro_features_nonfinite_replaced,0,Feature cleaning count accumulated while building graph snapshots
+neighbor_news_signal_clipped,0,Feature cleaning count accumulated while building graph snapshots
+neighbor_news_signal_nonfinite_replaced,0,Feature cleaning count accumulated while building graph snapshots
+neighbor_shock_signal_clipped,0,Feature cleaning count accumulated while building graph snapshots
+neighbor_shock_signal_nonfinite_replaced,0,Feature cleaning count accumulated while building graph snapshots
+realized_vol_lag_10_clipped,0,Feature cleaning count accumulated while building graph snapshots
+realized_vol_lag_10_nonfinite_replaced,130,Feature cleaning count accumulated while building graph snapshots
+realized_vol_lag_5_clipped,0,Feature cleaning count accumulated while building graph snapshots
+realized_vol_lag_5_nonfinite_replaced,9834,Feature cleaning count accumulated while building graph snapshots
+return_mean_10_clipped,0,Feature cleaning count accumulated while building graph snapshots
+return_mean_10_nonfinite_replaced,0,Feature cleaning count accumulated while building graph snapshots
+return_mean_5_clipped,0,Feature cleaning count accumulated while building graph snapshots
+return_mean_5_nonfinite_replaced,282,Feature cleaning count accumulated while building graph snapshots
+return_shock_clipped,0,Feature cleaning count accumulated while building graph snapshots
+return_shock_nonfinite_replaced,12800,Feature cleaning count accumulated while building graph snapshots
+rolling_vol_20_clipped,0,Feature cleaning count accumulated while building graph snapshots
+rolling_vol_20_nonfinite_replaced,12843,Feature cleaning count accumulated while building graph snapshots
+trading_value_ratio_20_clipped,0,Feature cleaning count accumulated while building graph snapshots
+trading_value_ratio_20_nonfinite_replaced,0,Feature cleaning count accumulated while building graph snapshots
+volatility_shock_clipped,5110,Feature cleaning count accumulated while building graph snapshots
+volatility_shock_nonfinite_replaced,0,Feature cleaning count accumulated while building graph snapshots
+volume_ratio_20_clipped,382,Feature cleaning count accumulated while building graph snapshots
+volume_ratio_20_nonfinite_replaced,12843,Feature cleaning count accumulated while building graph snapshots
+return_clip_lower,-0.3,Applied to historical return lag features only
+return_clip_upper,0.3,Applied to historical return lag features only
+rolling_vol_clip_upper,0.2,Applied to rolling_vol_20 feature only
+volume_ratio_clip_upper,10.0,Applied to volume_ratio_20 feature only
+target_y_clipped,0,Target realized volatility is not clipped
+target_definition,future_realized_volatility_5d_minus_rolling_vol_20_t_minus_1,"Main regression target is abnormal volatility, not raw future volatility"

@@ -1,0 +1,11 @@
+﻿,pred_capital_issuance,pred_debt_bond,pred_dividend,pred_earnings,pred_leadership,pred_legal_regulatory,pred_ma_ownership,pred_market_industry,pred_other,pred_project_contract
+true_capital_issuance,40,0,1,0,3,0,3,0,0,0
+true_debt_bond,0,35,0,0,1,0,3,1,1,0
+true_dividend,1,1,40,0,0,0,0,0,0,0
+true_earnings,0,0,0,284,5,0,0,0,2,0
+true_leadership,0,2,0,1,270,0,2,2,4,1
+true_legal_regulatory,0,0,0,3,1,19,0,0,4,0
+true_ma_ownership,2,0,0,1,6,0,170,0,3,3
+true_market_industry,0,0,0,0,2,0,0,59,8,0
+true_other,4,0,0,3,22,1,8,6,160,2
+true_project_contract,0,0,0,0,0,0,0,0,1,22

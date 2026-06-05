@@ -1,0 +1,11 @@
+model,variant,split,feature_count,input_dim,top_k_corr_neighbors,mean_topk_edges_per_target,alpha,mae,rmse,note
+Linear Regression,baseline,test,66,66,0,0.0,0.0,0.008550243452191353,0.01136903464794159,"Train-only linear baseline, included for direct comparison"
+Residual TopK Graph MLP,top30_h64_d010,test,30,120,20,19.851979667024203,1.0,0.00874384306371212,0.011782948859035969,Final prediction = Linear baseline + alpha * GNN residual; alpha selected on validation MAE
+Residual TopK Graph MLP,top30_h64_d000,test,30,120,20,19.851979667024203,1.0,0.00876067765057087,0.01179372426122427,Final prediction = Linear baseline + alpha * GNN residual; alpha selected on validation MAE
+Residual TopK Graph MLP,top50_h128_d015,test,50,200,20,19.851979667024203,1.0,0.00878480076789856,0.01193427387624979,Final prediction = Linear baseline + alpha * GNN residual; alpha selected on validation MAE
+Residual TopK Graph MLP,top40_h96_d010,test,40,160,20,19.851979667024203,1.0,0.008800513111054897,0.011894214898347855,Final prediction = Linear baseline + alpha * GNN residual; alpha selected on validation MAE
+Residual TopK Graph MLP,top50_h128_d015,validation,50,200,20,19.851979667024203,1.0,0.009362136013805866,0.013982919044792652,Final prediction = Linear baseline + alpha * GNN residual; alpha selected on validation MAE
+Residual TopK Graph MLP,top40_h96_d010,validation,40,160,20,19.851979667024203,1.0,0.009466856718063354,0.014032461680471897,Final prediction = Linear baseline + alpha * GNN residual; alpha selected on validation MAE
+Residual TopK Graph MLP,top30_h64_d010,validation,30,120,20,19.851979667024203,1.0,0.009475795552134514,0.014084517024457455,Final prediction = Linear baseline + alpha * GNN residual; alpha selected on validation MAE
+Residual TopK Graph MLP,top30_h64_d000,validation,30,120,20,19.851979667024203,1.0,0.00950202252715826,0.014063388109207153,Final prediction = Linear baseline + alpha * GNN residual; alpha selected on validation MAE
+Linear Regression,baseline,validation,66,66,0,0.0,0.0,0.009696053341031075,0.013981586322188377,"Train-only linear baseline, included for direct comparison"

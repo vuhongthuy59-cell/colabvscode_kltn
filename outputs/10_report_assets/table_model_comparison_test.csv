@@ -1,0 +1,10 @@
+model,input,graph,price_features,news_features,relationship_edges,co_mention_edges,mae,rmse,note
+Linear Regression,tabular price/news features,no,,,,,0.5297498106956482,0.650513768196106,baseline linear tabular model
+Random Forest,tabular price/news features,no,,,,,0.5337274670600891,0.6520209312438965,nonlinear tabular ML baseline
+GNN + News,,,Yes,Yes,No,No,0.5849257707595825,0.7154883742332458,
+Hybrid MLP-GAT,full node features + graph attention neighbors,signed top-k + ownership/value-chain/sector/news,,,,,0.5896052434152511,0.7311032132619025,Hybrid self MLP with edge-type-aware neighbor attention; weighted MAE loss
+Full Model,,,Yes,Yes,Yes,Yes,0.5924167037010193,0.724355161190033,
+Rolling Volatility,historical volatility only,no,,,,,0.6026085019111633,0.7035965919494629,prediction = rolling_vol_20 at T-1
+GNN Correlation Only,price features only,price_correlation only,,,,,0.6197924017906189,0.7475266456604004,one-hop weighted correlation message passing; no news/relationship edges
+GNN + Relationship,,,Yes,No,Yes,No,0.6213350296020508,0.7480146884918213,
+GNN Correlation Only,,,Yes,No,No,No,0.6221268773078918,0.7495136857032776,

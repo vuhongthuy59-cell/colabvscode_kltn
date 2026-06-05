@@ -1,0 +1,10 @@
+{
+  "manual_labeled_rows": 6062,
+  "category_train_rows": 4849,
+  "category_test_rows": 1213,
+  "sentiment_train_rows": 4849,
+  "sentiment_test_rows": 1213,
+  "all_articles_labeled": 55518,
+  "manual_labels_applied": 6062,
+  "model_labels_applied": 49456
+}

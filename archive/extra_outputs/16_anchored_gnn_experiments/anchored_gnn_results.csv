@@ -1,0 +1,11 @@
+model,variant,split,feature_count,input_dim,top_k_corr_neighbors,mean_topk_edges_per_target,mae,rmse,note
+Linear Regression,baseline,test,66,66,0,0.0,0.008550243452191353,0.01136903464794159,"Train-only linear baseline, included for direct comparison"
+Anchored TopK Graph MLP,top50_anchor_h96_d010,test,50,201,20,19.851979667024203,0.008822235278785229,0.011950287967920303,Graph MLP with train-only linear baseline prediction as an anchor feature
+Anchored TopK Graph MLP,all_anchor_h128_d015,test,66,265,20,19.851979667024203,0.008877433836460114,0.012008829973638058,Graph MLP with train-only linear baseline prediction as an anchor feature
+Anchored TopK Graph MLP,top30_anchor_h64_d010,test,30,121,20,19.851979667024203,0.008905427530407906,0.012084517627954483,Graph MLP with train-only linear baseline prediction as an anchor feature
+Anchored TopK Graph MLP,top30_anchor_h64_d000,test,30,121,20,19.851979667024203,0.008926003240048885,0.012086189351975918,Graph MLP with train-only linear baseline prediction as an anchor feature
+Anchored TopK Graph MLP,top50_anchor_h96_d010,validation,50,201,20,19.851979667024203,0.009479130618274212,0.01402739156037569,Graph MLP with train-only linear baseline prediction as an anchor feature
+Anchored TopK Graph MLP,all_anchor_h128_d015,validation,66,265,20,19.851979667024203,0.00948202796280384,0.014031157828867435,Graph MLP with train-only linear baseline prediction as an anchor feature
+Anchored TopK Graph MLP,top30_anchor_h64_d010,validation,30,121,20,19.851979667024203,0.009518190287053585,0.014170226640999317,Graph MLP with train-only linear baseline prediction as an anchor feature
+Anchored TopK Graph MLP,top30_anchor_h64_d000,validation,30,121,20,19.851979667024203,0.009551824070513248,0.014200757257640362,Graph MLP with train-only linear baseline prediction as an anchor feature
+Linear Regression,baseline,validation,66,66,0,0.0,0.009696053341031075,0.013981586322188377,"Train-only linear baseline, included for direct comparison"
