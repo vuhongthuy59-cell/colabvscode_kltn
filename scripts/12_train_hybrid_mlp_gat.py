@@ -106,7 +106,7 @@ def split_snapshot_ids(index: pd.DataFrame) -> tuple[set[int], set[int], set[int
 def metrics(y_true: np.ndarray, y_pred: np.ndarray) -> tuple[float, float]:
     return (
         float(mean_absolute_error(y_true, y_pred)),
-        float(mean_squared_error(y_true, y_pred, squared=False)),
+        float(np.sqrt(mean_squared_error(y_true, y_pred))),
     )
 
 

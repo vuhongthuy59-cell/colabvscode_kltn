@@ -169,7 +169,7 @@ def build_samples(
 
 def metrics(y_true: np.ndarray, y_pred: np.ndarray) -> tuple[float, float]:
     mae = mean_absolute_error(y_true, y_pred)
-    rmse = mean_squared_error(y_true, y_pred, squared=False)
+    rmse = np.sqrt(mean_squared_error(y_true, y_pred))
     return float(mae), float(rmse)
 
 

@@ -50,7 +50,7 @@ class TunedGraphMLP(torch.nn.Module):
 def metrics(y_true: np.ndarray, y_pred: np.ndarray) -> tuple[float, float]:
     return (
         float(mean_absolute_error(y_true, y_pred)),
-        float(mean_squared_error(y_true, y_pred, squared=False)),
+        float(np.sqrt(mean_squared_error(y_true, y_pred))),
     )
 
 

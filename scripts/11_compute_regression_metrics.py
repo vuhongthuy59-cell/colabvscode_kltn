@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
@@ -22,7 +23,7 @@ def compute_group_metrics(df: pd.DataFrame, group_cols: list[str], source: str) 
                 "source": source,
                 "n": len(group),
                 "mae": float(mean_absolute_error(group["y_true"], group["y_pred"])),
-                "rmse": float(mean_squared_error(group["y_true"], group["y_pred"], squared=False)),
+                "rmse": float(np.sqrt(mean_squared_error(group["y_true"], group["y_pred"]))),
                 "r2": float(r2_score(group["y_true"], group["y_pred"])),
             }
         )
