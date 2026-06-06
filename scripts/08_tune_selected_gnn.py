@@ -82,14 +82,16 @@ def aggregate_topk_corr_for_targets(
     snapshot: dict,
     target_nodes: list[int],
     cols: list[int],
-    corr_type_id: int,
+    corr_type_ids: set[int],
 ) -> tuple[np.ndarray, int]:
     x = snapshot["x"][:, cols].float()
     edge_type = snapshot["edge_type"].long()
     edge_index = snapshot["edge_index"].long()
     edge_weight = snapshot["edge_weight"].float()
 
-    corr_mask = edge_type.eq(int(corr_type_id))
+    corr_mask = torch.zeros(edge_type.shape[0], dtype=torch.bool)
+    for corr_type_id in corr_type_ids:
+        corr_mask |= edge_type.eq(int(corr_type_id))
     if int(corr_mask.sum()) == 0:
         return np.zeros((len(target_nodes), len(cols)), dtype=np.float32), 0
 
@@ -121,7 +123,7 @@ def build_samples(
     snapshots: list[dict],
     index: pd.DataFrame,
     cols: list[int],
-    corr_type_id: int,
+    corr_type_ids: set[int],
 ) -> tuple[pd.DataFrame, np.ndarray, np.ndarray, float]:
     valid_snapshot_ids = set(index["snapshot_id"].astype(int))
     rows = []
@@ -135,7 +137,7 @@ def build_samples(
         target_nodes = torch.where(snapshot["target_mask"])[0].tolist()
         if not target_nodes:
             continue
-        neighbor_features, selected_count = aggregate_topk_corr_for_targets(snapshot, target_nodes, cols, corr_type_id)
+        neighbor_features, selected_count = aggregate_topk_corr_for_targets(snapshot, target_nodes, cols, corr_type_ids)
         selected_edges.append(selected_count / max(len(target_nodes), 1))
         for row_pos, node_idx in enumerate(target_nodes):
             node_features = snapshot["x"][node_idx, cols].numpy().astype(np.float32)
@@ -167,6 +169,24 @@ def build_samples(
         np.asarray(y_rows, dtype=np.float32),
         float(np.mean(selected_edges)) if selected_edges else 0.0,
     )
+
+
+def load_correlation_edge_type_ids() -> set[int]:
+    with open(EDGE_TYPE_MAP_FILE, "r", encoding="utf-8") as f:
+        edge_type_map = json.load(f)
+
+    candidate_names = [
+        "price_correlation",
+        "corr_positive_top10",
+        "corr_negative_top5",
+        "sector_top5_only",
+    ]
+    corr_type_ids = {int(edge_type_map[name]) for name in candidate_names if name in edge_type_map}
+    if not corr_type_ids:
+        available = ", ".join(sorted(edge_type_map))
+        raise KeyError(f"No correlation edge type found. Available edge types: {available}")
+    print(f"Using correlation edge types: {sorted(corr_type_ids)}")
+    return corr_type_ids
 
 
 def train_variant(
@@ -255,8 +275,7 @@ def train_variant(
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    with open(EDGE_TYPE_MAP_FILE, "r", encoding="utf-8") as f:
-        corr_type_id = int(json.load(f)["price_correlation"])
+    corr_type_ids = load_correlation_edge_type_ids()
 
     index = pd.read_csv(SNAPSHOT_INDEX_FILE)
     train_ids, val_ids, test_ids = split_snapshot_ids(index)
@@ -266,7 +285,7 @@ def main() -> None:
     snapshots = torch.load(SNAPSHOT_FILE, map_location="cpu")
     print(f"Loaded {len(snapshots)} snapshots")
 
-    samples, x, y, mean_edges = build_samples(snapshots, index, cols, corr_type_id)
+    samples, x, y, mean_edges = build_samples(snapshots, index, cols, corr_type_ids)
     samples.loc[samples["snapshot_id"].isin(train_ids), "split"] = "train"
     samples.loc[samples["snapshot_id"].isin(val_ids), "split"] = "validation"
     samples.loc[samples["snapshot_id"].isin(test_ids), "split"] = "test"
