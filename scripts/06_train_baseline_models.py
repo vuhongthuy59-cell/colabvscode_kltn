@@ -8,8 +8,8 @@ import pandas as pd
 import torch
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error, mean_squared_error
 
+from pipeline_utils import assign_temporal_split, regression_metrics
 from project_config import local_output
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -62,20 +62,6 @@ class CorrOnlyGNN(torch.nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.net(x).squeeze(-1)
-
-
-def split_snapshot_ids(index: pd.DataFrame) -> tuple[set[int], set[int], set[int]]:
-    ordered = index.sort_values(["event_trading_date", "snapshot_id"]).reset_index(drop=True)
-    unique_dates = ordered["event_trading_date"].drop_duplicates().reset_index(drop=True)
-    train_end = int(len(unique_dates) * 0.70)
-    val_end = int(len(unique_dates) * 0.85)
-    train_dates = set(unique_dates.iloc[:train_end])
-    val_dates = set(unique_dates.iloc[train_end:val_end])
-    test_dates = set(unique_dates.iloc[val_end:])
-    train_ids = set(ordered.loc[ordered["event_trading_date"].isin(train_dates), "snapshot_id"].astype(int))
-    val_ids = set(ordered.loc[ordered["event_trading_date"].isin(val_dates), "snapshot_id"].astype(int))
-    test_ids = set(ordered.loc[ordered["event_trading_date"].isin(test_dates), "snapshot_id"].astype(int))
-    return train_ids, val_ids, test_ids
 
 
 def extract_corr_neighbor_feature(snapshot: dict, node_idx: int, price_feature_dim: int, corr_type_ids: set[int]) -> np.ndarray:
@@ -167,10 +153,7 @@ def build_samples(
     )
 
 
-def metrics(y_true: np.ndarray, y_pred: np.ndarray) -> tuple[float, float]:
-    mae = mean_absolute_error(y_true, y_pred)
-    rmse = np.sqrt(mean_squared_error(y_true, y_pred))
-    return float(mae), float(rmse)
+metrics = regression_metrics
 
 
 def train_corr_gnn(
@@ -179,7 +162,7 @@ def train_corr_gnn(
     x_val: np.ndarray,
     y_val: np.ndarray,
     x_test: np.ndarray,
-) -> tuple[np.ndarray, np.ndarray, CorrOnlyGNN, pd.DataFrame]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, CorrOnlyGNN, pd.DataFrame]:
     torch.manual_seed(RANDOM_STATE)
     model = CorrOnlyGNN(input_dim=x_train.shape[1], hidden_dim=GNN_HIDDEN_DIM)
     optimizer = torch.optim.Adam(model.parameters(), lr=GNN_LR)
@@ -241,9 +224,10 @@ def train_corr_gnn(
         model.load_state_dict(best_state)
     model.eval()
     with torch.no_grad():
+        train_pred = model(x_train_t).numpy()
         val_pred = model(x_val_t).numpy()
         test_pred = model(x_test_t).numpy()
-    return val_pred, test_pred, model, pd.DataFrame(log_rows)
+    return train_pred, val_pred, test_pred, model, pd.DataFrame(log_rows)
 
 
 def main() -> None:
@@ -257,11 +241,8 @@ def main() -> None:
     snapshots = torch.load(SNAPSHOT_FILE, map_location="cpu")
     print(f"Loaded {len(snapshots)} snapshots")
 
-    train_ids, val_ids, test_ids = split_snapshot_ids(index)
     samples, x, y, rolling_pred, gnn_x = build_samples(snapshots, index, edge_type_map)
-    samples.loc[samples["snapshot_id"].isin(train_ids), "split"] = "train"
-    samples.loc[samples["snapshot_id"].isin(val_ids), "split"] = "validation"
-    samples.loc[samples["snapshot_id"].isin(test_ids), "split"] = "test"
+    samples = assign_temporal_split(samples, index)
 
     train_mask = samples["split"].eq("train").to_numpy()
     val_mask = samples["split"].eq("validation").to_numpy()
@@ -274,7 +255,7 @@ def main() -> None:
     prediction_frames = []
     result_rows = []
 
-    for split_name, mask in [("validation", val_mask), ("test", test_mask)]:
+    for split_name, mask in [("train", train_mask), ("validation", val_mask), ("test", test_mask)]:
         mae, rmse = metrics(y[mask], rolling_pred[mask])
         result_rows.append(
             {
@@ -309,6 +290,7 @@ def main() -> None:
     ]
     for model_name, model, input_desc, note in model_specs:
         for split_name, mask, x_split, y_split in [
+            ("train", train_mask, x_train, y_train),
             ("validation", val_mask, x_val, y_val),
             ("test", test_mask, x_test, y_test),
         ]:
@@ -330,7 +312,7 @@ def main() -> None:
             frame["y_pred"] = pred
             prediction_frames.append(frame)
 
-    gnn_val_pred, gnn_test_pred, gnn_model, gnn_log = train_corr_gnn(
+    gnn_train_pred, gnn_val_pred, gnn_test_pred, gnn_model, gnn_log = train_corr_gnn(
         gnn_x[train_mask],
         y_train,
         gnn_x[val_mask],
@@ -338,6 +320,7 @@ def main() -> None:
         gnn_x[test_mask],
     )
     for split_name, mask, y_split, pred in [
+        ("train", train_mask, y_train, gnn_train_pred),
         ("validation", val_mask, y_val, gnn_val_pred),
         ("test", test_mask, y_test, gnn_test_pred),
     ]:

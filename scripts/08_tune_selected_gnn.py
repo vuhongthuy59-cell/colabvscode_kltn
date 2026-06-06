@@ -6,13 +6,13 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
-from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.preprocessing import StandardScaler
 
-from project_config import colab_output, local_output
+from pipeline_utils import assign_temporal_split, regression_metrics
+from project_config import local_output
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_DIR = colab_output("08_tuned_gnn")
+OUT_DIR = local_output("08_tuned_gnn")
 
 SNAPSHOT_FILE = local_output("05_event_graph_dataset") / "graph_snapshots.pt"
 SNAPSHOT_INDEX_FILE = local_output("05_event_graph_dataset") / "snapshot_index.csv"
@@ -47,26 +47,7 @@ class TunedGraphMLP(torch.nn.Module):
         return self.net(x).squeeze(-1)
 
 
-def metrics(y_true: np.ndarray, y_pred: np.ndarray) -> tuple[float, float]:
-    return (
-        float(mean_absolute_error(y_true, y_pred)),
-        float(np.sqrt(mean_squared_error(y_true, y_pred))),
-    )
-
-
-def split_snapshot_ids(index: pd.DataFrame) -> tuple[set[int], set[int], set[int]]:
-    ordered = index.sort_values(["event_trading_date", "snapshot_id"]).reset_index(drop=True)
-    unique_dates = ordered["event_trading_date"].drop_duplicates().reset_index(drop=True)
-    train_end = int(len(unique_dates) * 0.70)
-    val_end = int(len(unique_dates) * 0.85)
-    train_dates = set(unique_dates.iloc[:train_end])
-    val_dates = set(unique_dates.iloc[train_end:val_end])
-    test_dates = set(unique_dates.iloc[val_end:])
-    return (
-        set(ordered.loc[ordered["event_trading_date"].isin(train_dates), "snapshot_id"].astype(int)),
-        set(ordered.loc[ordered["event_trading_date"].isin(val_dates), "snapshot_id"].astype(int)),
-        set(ordered.loc[ordered["event_trading_date"].isin(test_dates), "snapshot_id"].astype(int)),
-    )
+metrics = regression_metrics
 
 
 def load_top_rf_feature_cols() -> list[int]:
@@ -278,7 +259,6 @@ def main() -> None:
     corr_type_ids = load_correlation_edge_type_ids()
 
     index = pd.read_csv(SNAPSHOT_INDEX_FILE)
-    train_ids, val_ids, test_ids = split_snapshot_ids(index)
     cols = load_top_rf_feature_cols()
 
     print("Loading graph snapshots ...")
@@ -286,9 +266,7 @@ def main() -> None:
     print(f"Loaded {len(snapshots)} snapshots")
 
     samples, x, y, mean_edges = build_samples(snapshots, index, cols, corr_type_ids)
-    samples.loc[samples["snapshot_id"].isin(train_ids), "split"] = "train"
-    samples.loc[samples["snapshot_id"].isin(val_ids), "split"] = "validation"
-    samples.loc[samples["snapshot_id"].isin(test_ids), "split"] = "test"
+    samples = assign_temporal_split(samples, index)
     train_mask = samples["split"].eq("train").to_numpy()
     val_mask = samples["split"].eq("validation").to_numpy()
     test_mask = samples["split"].eq("test").to_numpy()

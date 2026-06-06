@@ -1,240 +1,509 @@
-﻿================================================================================
-  KHÓA LUẬN TỐT NGHIỆP: DỰ BÁO BIẾN ĐỘNG CỔ PHIẾU 
-  BẰNG ĐỒ THỊ TRI THỨC KẾT HỢP TIN TỨC TÀI CHÍNH
-================================================================================
+# BAO CAO KHOA LUAN - BAN CAP NHAT PIPELINE LOCAL
 
-  Sinh viên: [Tên của bạn]  
-  Giảng viên hướng dẫn: [Tên giảng viên]
-  Thời gian: 2022 - 2025
+## De tai
 
+**Du bao bien dong co phieu tu tin tuc tai chinh bang du lieu gia, quan he doanh nghiep va Graph Neural Networks tai thi truong Viet Nam.**
 
-1. TỔNG QUAN ĐỀ TÀI
---------------------------------------------------------------------------------
-  Bài toán: Dự báo biến động giá cổ phiếu (volatility) sử dụng:
-    • Dữ liệu lịch sử giá (OHLCV) của 118 mã trên sàn HOSE
-    • Tin tức tài chính từ Vietstock (55.518 bài viết)
-    • Quan hệ doanh nghiệp (1.398 cạnh đồ thị)
-    • Mô hình đồ thị tri thức (Graph Neural Networks)
+Sinh vien: `[Ten cua ban]`
 
-  Ý tưởng chính: Kết hợp thông tin từ nhiều nguồn (giá, tin tức, 
-  quan hệ doanh nghiệp) vào một khung đồ thị thống nhất để dự báo.
+Giang vien huong dan: `[Ten giang vien]`
 
+Pham vi du lieu chinh: `2022-01-01` den `2025-12-31`
 
-2. KIẾN TRÚC PIPELINE CHUẨN (11 bước)
---------------------------------------------------------------------------------
+---
 
-  Bước 1 - Chuẩn bị dữ liệu giá (01_prepare_price_data)
-  ─────────────────────────────────────────────────────────
-    • Input: universe.csv (118 cổ phiếu), Stock_Price_2022-2025.csv
-    • Output: 10 files vào outputs/local/01_price_data/
-    • Kiểm soát chất lượng dữ liệu:
-        - Kiểm tra thiếu cột OHLCV bắt buộc
-        - Kiểm tra missing trong open/high/low/close/volume
-        - Loại dòng trùng theo date + ticker
-        - Báo cáo lỗi giá bất thường: close <= 0, high < low,
-          open/close ngoài biên high-low, volume âm/zero
-        - Báo cáo outlier: |log_return| > 30%/50%,
-          volume_ratio_20 > 5/10
-        - Output bổ sung: price_quality_report.csv
-    • Kết quả:
-        - 117.180 dòng dữ liệu OHLCV
-        - 118 mã cổ phiếu thuộc 12 ngành
-        - Khoảng thời gian: 04/01/2022 → 31/12/2025
-        - Đặc trưng: log_return, rolling_vol_20, rolling_vol_60,
-          volume_ratio_20, abnormal_volume, v.v.
+## 1. Tong quan bai toan
 
-  Bước 2 - Chuẩn bị dữ liệu tin tức (02_prepare_news_data)
-  ─────────────────────────────────────────────────────────
-    • Input: News_2022_2025_2.xlsx, Vietstock_News_2022_2025_crawl.xlsx
-    • Xử lý: chuẩn hóa Unicode, loại bỏ crawl trùng (1.723 dòng)
-    • Nhãn tin tức hiện tại: manual labels + mô hình học máy TF-IDF
-      + Logistic Regression từ 6.062 nhãn tay
-    • Output: 3 files vào outputs/local/02_news_data/
-    • Kết quả:
-        - 55.518 bài viết firm-specific (có gắn với mã CK)
-        - 57.899 ticker mentions (ánh xạ công ty → mã)
-        - 343 aliases (tên gọi khác nhau của doanh nghiệp)
-        - Phân bố thể loại sau khi áp nhãn ML:
-            • earnings:           10.996
-            • other:              10.710
-            • leadership:          8.674
-            • ma_ownership:        7.787
-            • debt_bond:           5.260
-            • market_industry:     4.097
-            • capital_issuance:    2.560
-            • dividend:            2.320
-            • project_contract:    1.701
-            • legal_regulatory:    1.413
-        - Phân bố sentiment sau khi áp nhãn ML:
-            • neutral:            51.101
-            • positive:            2.853
-            • negative:            1.564
+Du an xay dung pipeline du bao bien dong bat thuong cua co phieu Viet Nam sau khi xuat hien tin tuc tai chinh. Khac voi bai toan du bao gia dong cua, muc tieu o day la du bao muc bien dong/rui ro trong ngan han.
 
+Du lieu su dung gom:
 
-  Bước 3 - Kiểm định mô hình gán nhãn tin tức (03_train_news_labeler)
-  ───────────────────────────────────────────────────────────────
-    • Input: 6.062 bài báo được gán nhãn tay
-    • Mô hình: TF-IDF word/character n-grams + Logistic Regression
-    • Kết quả đánh giá trên holdout 20%:
-         Category   Accuracy=0.9060  Macro F1=0.8859
-         Sentiment  Accuracy=0.9662  Macro F1=0.8619
-    • Output: outputs/local/03_news_labeler/
+- Du lieu gia lich su cua 118 ma co phieu.
+- Tin tuc tai chinh tu Vietstock, tong cong 55.518 bai viet firm-specific.
+- Quan he doanh nghiep gom quan he cung tap doan, chuoi gia tri, co dong chung, cum kinh doanh va quan he sector chon loc.
+- Graph snapshots theo tung su kien ticker-date.
 
+Bai toan duoc xac dinh la **hoi quy**:
 
-  Bước 4 - Chuẩn bị quan hệ doanh nghiệp (04_prepare_company_relationships)
-  ──────────────────────────────────────────────────────────────
-    • Input: relationships.xlsx (2 sheet: sector + quan hệ)
-    • Output: 8 files vào outputs/local/04_company_relationships/
-    • Kết quả:
-        - 1.500 cạnh đồ thị quan hệ chính dùng cho GNN
-        - Phân bố:
-            • business_cluster:          930 - cụm kinh doanh hẹp
-            • value_chain:               398 - chuỗi giá trị
-            • strategic_ecosystem:        60 - hệ sinh thái chiến lược
-            • common_owner:               56 - cổ đông chung từ ownership graph
-            • same_group:                 50 - cùng tập đoàn
-            • parent/subsidiary:           6 - công ty mẹ/con hai chiều
-        - same_industry_edges.csv vẫn được lưu riêng 1.342 cạnh để đối chiếu,
-          nhưng không đưa toàn bộ vào graph chính nhằm tránh graph quá dày và nhiễu.
+```text
+Target: log_abnormal_volatility_5d
+```
 
+Y nghia target:
 
-  Bước 5 - Xây dựng event graph dataset (05_build_event_graph_dataset)
-  ────────────────────────────────────────────────────────────
-    • Kết hợp dữ liệu từ 3 bước trên thành đồ thị
-    • Xử lý missing/outlier khi tạo tensor:
-        - Bỏ các bài không đủ 20 ngày lịch sử, 252 ngày correlation,
-          hoặc 5 ngày tương lai để tạo nhãn
-        - Thay NaN/inf trong feature đầu vào bằng 0 để tensor hợp lệ
-        - Clip nhẹ feature đầu vào:
-            log_return lags trong [-0.30, 0.30]
-            rolling_vol_20 trong [0.00, 0.20]
-            volume_ratio_20 trong [0.00, 10.00]
-            trading_value_ratio_20 trong [0.00, 10.00]
-        - Bổ sung 7 feature giá ngắn hạn:
-            realized_vol_lag_5, realized_vol_lag_10,
-            return_mean_5, return_mean_10,
-            abs_return_mean_5, abs_return_mean_10,
-            max_abs_return_5
-        - Không clip target y vì volatility cao là tín hiệu cần dự báo
-        - Output bổ sung: graph_feature_quality_report.csv
-    • Output: 8 files vào outputs/local/05_event_graph_dataset/
-    • Kết quả:
-        - 23.705 snapshot đồ thị
-        - Mỗi snapshot = 1 mã cổ phiếu trong 1 ngày sự kiện
-        - Tin cùng mã/cùng ngày được gộp để tránh nhân bản target
-        - Trung bình 13.696 cạnh/snapshot
-        - 66 features/node (giá + giá ngắn hạn + vi mô + ngành + vĩ mô + tin tức)
-        - 10 loại cạnh:
-            • price_correlation (tương quan giá)
-            • parent_to_subsidiary / subsidiary_to_parent
-            • same_group / strategic_ecosystem / business_cluster / value_chain / common_owner
-            • news_co_mention (đồng xuất hiện trong tin tức)
+```text
+future_realized_volatility_5d
+- target_baseline_rolling_vol_20
+-> abnormal_volatility_5d
+-> log/chuan hoa thanh log_abnormal_volatility_5d
+```
 
+Target nay tra loi cau hoi:
 
-  Bước 6 - Baseline Models (06_train_baseline_models)
-  ─────────────────────────────────────────────
-    • Chia dữ liệu theo event_trading_date:
-         Train:      518 ngày
-         Validation: 111 ngày
-         Test:       111 ngày, 3.638 ticker-date samples
-      Mỗi ngày chỉ thuộc một split, tránh rò rỉ thông tin cùng ngày.
-    • 4 mô hình nền tảng:
-         Linear Regression      MAE=0.00858  RMSE=0.01149  ← Best MAE
-         Random Forest          MAE=0.00861  RMSE=0.01148  ← Best R2
-         GNN Correlation Only   MAE=0.00910  RMSE=0.01230
-         Rolling Volatility     MAE=0.00946  RMSE=0.01226
+> Sau mot su kien tin tuc, co phieu co bien dong bat thuong trong 5 ngay tiep theo hay khong, va muc do bien dong do lon den dau?
 
-  Bước 7 - GNN Ablation (07_train_gnn_ablation_models)
-  ────────────────────────────────────────────────────
-    • 4 cấu hình GNN (test-set):
-         GNN Correlation Only   MAE=0.00910  RMSE=0.01230
-         Full Model             MAE=0.00913  RMSE=0.01244
-         GNN + Relationship     MAE=0.00914  RMSE=0.01234
-         GNN + News             MAE=0.00924  RMSE=0.01259
+---
 
-    => Nhận xét: Sau khi gộp dữ liệu theo ticker-date, GNN không còn
-       hưởng lợi từ việc nhân bản nhiều tin cùng target. GNN vẫn chưa
-       vượt baseline tuyến tính/tabular trên target volatility thô.
+## 2. Logic khoa hoc cua pipeline
 
-  Bước 8 - Fine-tune GNN được chọn (08_tune_selected_gnn)
-  ─────────────────────────────────────
-    • Cấu hình đầu vào:
-         top_30_rf + corr_top_20
-    • Cải tiến khi train:
-         StandardScaler cho X và y
-         SmoothL1 loss
-         AdamW + weight decay
-         gradient clipping
-         early stopping theo validation MAE
-         interaction features: self, neighbor, self-neighbor, self*neighbor
-    • Kết quả tốt nhất:
-         hidden_dim=64, dropout=0.00
-         MAE=0.00883  RMSE=0.01219
+Pipeline hien tai da duoc sap xep lai theo mot quy trinh forecasting local-only:
 
+```text
+raw data
+-> data cleaning
+-> feature engineering
+-> target construction
+-> time-based split
+-> graph construction
+-> baseline models
+-> GNN models
+-> residual hybrid GNN
+-> evaluation
+-> report assets
+```
 
-  Bước 9 - Evaluation & Case Studies (09_evaluate_models_and_cases)
-  ─────────────────────────────────────────────────────────────────────────
-    • 45 case studies được phân tích chi tiết
-    • Đánh giá sai số theo:
-        - Ngành (category)
-        - Mã cổ phiếu (ticker)
-        - Ngày sự kiện (event date)
+Nguyen tac khoa hoc chinh:
 
-  Bước 10 - Report Tables & Figures (10_generate_report_assets)
-  ────────────────────────────────────────────────────────────────────────
-    • 4 biểu đồ:
-        1) So sánh MAE/RMSE giữa các mô hình
-        2) Random Forest feature importance (top 15)
-        3) GNN ablation validation curves
-        4) Test MAE theo news category
-    • 5 bảng số liệu chi tiết
+- Split theo `event_trading_date` de tranh leakage thoi gian.
+- Baseline tabular duoc train truoc lam moc so sanh.
+- GNN duoc danh gia sau baseline, khong ket luan bang cam tinh.
+- Residual Hybrid GNN duoc dung de kiem tra graph co bo sung duoc phan tin hieu baseline chua hoc duoc hay khong.
+- Tat ca pipeline chinh hien chay local va ghi output vao `outputs/local/` va `outputs/report/`.
 
-  Bước 11 - Final Regression Metrics (11_compute_regression_metrics)
-  ─────────────────────────────────────────────────────────────
-    • Tính MAE, RMSE và R2 từ prediction files
-    • Output: outputs/report/11_regression_metrics/
+Lenh chay pipeline chinh:
 
+```powershell
+python scripts\00_run_local_pipeline.py
+```
 
-3. KẾT LUẬN CHÍNH
---------------------------------------------------------------------------------
+Lenh chi cap nhat metric/bao cao:
 
-  1. Sau khi sửa split theo event_trading_date, bổ sung feature giá
-     ngắn hạn và gộp tin theo ticker-date, Linear Regression đạt MAE
-     tốt nhất trên test-set (MAE=0.00858, RMSE=0.01149). Random Forest
-     đứng rất sát và có R2 tốt nhất trong nhóm baseline.
+```powershell
+python scripts\00_run_local_pipeline.py --from-step 09
+```
 
-  2. Việc sửa split theo ngày làm kết quả đánh giá chặt hơn. So với
-     snapshot-level split trước đó, MAE tăng khoảng 2.6% đến 7.8%
-     tùy mô hình, cho thấy split cũ có thể lạc quan hơn thực tế.
+---
 
-  3. Cạnh price_correlation là loại cạnh quan trọng nhất
-     trong đồ thị. Các loại cạnh khác ít tác động.
+## 3. Cau truc output hien tai
 
-  4. GNN chưa vượt qua được Random Forest trên bài toán này,
-     và cũng chưa vượt baseline tuyến tính sau khi chia dữ liệu theo
-     ngày. Gợi ý cần cải tiến biểu diễn tin tức, kiến trúc graph
-     learning, hoặc cách xây dựng cạnh.
+```text
+outputs/
+  local/
+    01_price_data/
+    02_news_data/
+    03_news_labeler/
+    04_company_relationships/
+    05_event_graph_dataset/
+    06_baseline_models/
+    07_gnn_ablation_models/
+    08_tuned_gnn/
+    12_hybrid_mlp_gat/
+    14_residual_hybrid_gnn/
+  report/
+    09_model_evaluation/
+    10_report_assets/
+    11_regression_metrics/
+```
 
-  5. Nhãn tin tức học từ 6.062 nhãn tay đạt chất lượng phân loại
-     tương đối tốt (macro F1 > 0.86), nhưng khi đưa vào mô hình dự báo
-     volatility, tín hiệu tin tức vẫn chưa đủ mạnh để vượt baseline giá.
+Nhanh Colab da duoc loai khoi ban pipeline chinh. Toan bo script chinh hien chay local.
 
-  6. Top-k correlation giúp giảm nhiễu so với dùng toàn bộ graph trong
-     một số cấu hình. Khi kết hợp với chuẩn hóa feature/target, feature
-     giá ngắn hạn và interaction self-neighbor, Tuned TopK Graph MLP đạt
-     MAE=0.00883, tốt hơn các biến thể GNN cơ bản nhưng vẫn kém baseline
-     tabular tốt nhất.
+---
 
-  7. Pipeline xử lý dữ liệu hoàn chỉnh, tái sử dụng được,
-     output được tổ chức rõ ràng theo từng bước.
+## 4. Mo ta cac buoc xu ly du lieu
 
+### 4.1. Du lieu gia
 
-4. HƯỚNG PHÁT TRIỂN
---------------------------------------------------------------------------------
-  • Thử nghiệm GNN deep hơn (2+ layers, attention mechanisms)
-  • Cập nhật dữ liệu real-time qua API
-  • Xây dựng web demo trực quan
-  • Kết hợp thêm dữ liệu vĩ mô (lãi suất, CPI, GDP)
-  • Thử nghiệm mô hình transformer-based cho news encoding
+Script: `scripts/01_prepare_price_data.py`
 
-================================================================================
+Output: `outputs/local/01_price_data/`
+
+Xu ly chinh:
+
+- Kiem tra cot OHLCV bat buoc.
+- Loai dong trung theo `date + ticker`.
+- Kiem tra loi gia bat thuong: `close <= 0`, `high < low`, `volume <= 0`.
+- Tao cac feature gia nhu `log_return`, `rolling_vol_20`, `rolling_vol_60`, `volume_ratio_20`, `abnormal_volume`.
+- Tao bao cao chat luong du lieu gia trong `price_quality_report.csv`.
+
+### 4.2. Du lieu tin tuc
+
+Script: `scripts/02_prepare_news_data.py`
+
+Output: `outputs/local/02_news_data/`
+
+Ket qua chinh:
+
+- 55.518 bai viet firm-specific.
+- 57.899 ticker mentions.
+- 343 aliases ten doanh nghiep.
+- Tin tuc duoc gan voi ma co phieu va ngay giao dich su kien.
+
+Nhom nhan tin tuc:
+
+- `earnings`
+- `leadership`
+- `ma_ownership`
+- `debt_bond`
+- `market_industry`
+- `capital_issuance`
+- `dividend`
+- `project_contract`
+- `legal_regulatory`
+- `other`
+
+Sentiment gom:
+
+- `positive`
+- `neutral`
+- `negative`
+
+### 4.3. Kiem dinh nhan tin tuc
+
+Script: `scripts/03_train_news_labeler.py`
+
+Mo hinh:
+
+```text
+TF-IDF word/character n-grams + Logistic Regression
+```
+
+Ket qua holdout:
+
+```text
+Category   Accuracy=0.9060  Macro F1=0.8859
+Sentiment  Accuracy=0.9662  Macro F1=0.8619
+```
+
+Y nghia:
+
+> Nhan tin tuc co chat luong du de dung lam feature giai thich trong mo hinh du bao, nhung khong dam bao rieng tin tuc se du manh de du bao volatility.
+
+### 4.4. Quan he doanh nghiep
+
+Script: `scripts/04_prepare_company_relationships.py`
+
+Output: `outputs/local/04_company_relationships/`
+
+Graph quan he gom cac lop:
+
+- `business_cluster`
+- `value_chain`
+- `strategic_ecosystem`
+- `common_owner`
+- `same_group`
+- `parent/subsidiary`
+
+Luu y khoa hoc:
+
+> Khong dua toan bo same-industry graph vao graph chinh vi graph qua day co the tao nhieu, lam GNN kho hoc tin hieu that.
+
+---
+
+## 5. Xay dung graph dataset va target
+
+Script: `scripts/05_build_event_graph_dataset.py`
+
+Output: `outputs/local/05_event_graph_dataset/`
+
+Ket qua:
+
+```text
+Graph snapshots hop le: 23.705
+Don vi mau: 1 ticker + 1 event_trading_date
+Target: log_abnormal_volatility_5d
+Edge types: 6
+```
+
+Xu ly missing/outlier:
+
+- Bo su kien khong du 20 ngay lich su de tao feature ngan han.
+- Bo su kien khong du 252 ngay de tinh correlation.
+- Bo su kien khong du 5 ngay tuong lai de tao target.
+- Thay `NaN/inf` trong feature dau vao bang 0.
+- Clip feature dau vao de giam outlier:
+
+```text
+log_return lags: [-0.30, 0.30]
+rolling_vol_20: [0.00, 0.20]
+volume_ratio_20: [0.00, 10.00]
+trading_value_ratio_20: [0.00, 10.00]
+```
+
+Khong clip target vi volatility cao la tin hieu can du bao.
+
+Edge types trong graph:
+
+- `corr_positive_top10`
+- `corr_negative_top5`
+- `ownership`
+- `value_chain_curated`
+- `sector_top5_only`
+- `news_co_mention`
+
+Feature quan trong:
+
+- Feature gia ngan han.
+- Shock features.
+- News category/sentiment features.
+- Neighbor exposure features.
+- PhoBERT PCA title embedding neu file `news_title_embedding_pca.csv` ton tai.
+
+---
+
+## 6. Split du lieu
+
+Du lieu duoc chia theo `event_trading_date`, khong chia ngau nhien theo dong.
+
+Y nghia:
+
+> Tat ca mau cung ngay chi nam trong mot split, tranh viec thong tin cung ngay bi ro ri giua train va test.
+
+Ket qua split hien tai:
+
+```text
+Train:      518 ngay
+Validation: 111 ngay
+Test:       111 ngay
+Test size:  3.638 samples
+```
+
+---
+
+## 7. Mo hinh da su dung
+
+### 7.1. Baseline tabular
+
+Script: `scripts/06_train_baseline_models.py`
+
+Mo hinh:
+
+- Rolling Volatility.
+- Linear Regression.
+- Random Forest.
+- GNN Correlation Only baseline.
+
+Vai tro:
+
+> Baseline cho biet neu chi dung feature gia/news dang bang bang thi mo hinh dat duoc den dau. GNN chi co y nghia neu bo sung duoc tin hieu vuot qua baseline nay.
+
+### 7.2. GNN ablation
+
+Script: `scripts/07_train_gnn_ablation_models.py`
+
+Cau hinh:
+
+- `GNN Correlation Only`
+- `GNN + News`
+- `GNN + Relationship`
+- `Full Model`
+
+Muc dich:
+
+> Kiem tra tung nhom input/edge co dong gop the nao.
+
+### 7.3. Tuned TopK Graph MLP
+
+Script: `scripts/08_tune_selected_gnn.py`
+
+Cai tien:
+
+- Top-k correlation neighbors.
+- StandardScaler cho X/y.
+- SmoothL1 loss.
+- AdamW.
+- Gradient clipping.
+- Early stopping theo validation MAE.
+- Interaction features: self, neighbor, self-neighbor, self*neighbor.
+
+### 7.4. Hybrid MLP-GAT
+
+Script: `scripts/12_train_hybrid_mlp_gat.py`
+
+Y tuong:
+
+> Ket hop self node feature voi neighbor attention theo edge type.
+
+Ket qua hien tai cho thay Hybrid MLP-GAT thuan chua vuot baseline.
+
+### 7.5. Residual Hybrid GNN
+
+Script: `scripts/14_train_residual_hybrid_gnn.py`
+
+Day la huong GNN chinh hien tai.
+
+Cong thuc:
+
+```text
+y_pred_final = y_pred_tabular_baseline + alpha * graph_residual_pred
+```
+
+Trong do:
+
+- Ridge Regression hoac HistGradientBoostingRegressor hoc phan tin hieu tabular/gia co ban.
+- GNN hoc phan sai so con lai cua baseline.
+- `alpha` duoc chon theo validation de tranh graph residual lam xau du bao.
+- Activation trong Custom GNN duoc doi tu ReLU sang LeakyReLU(0.01), giu hidden_dim = 96 va attention_dropout = 0.45 de lam doi chung.
+
+Y nghia khoa hoc:
+
+> Mo hinh nay khong ep GNN hoc lai toan bo target tu dau. Thay vao do, no kiem tra graph co giai thich duoc phan bien dong ma baseline tabular chua giai thich duoc hay khong.
+
+---
+
+## 8. Ket qua thuc nghiem moi nhat
+
+Nguon bang:
+
+```text
+outputs/report/11_regression_metrics/r2_metrics_test.csv
+```
+
+Ket qua test-set:
+
+| Model | MAE | RMSE | R2 |
+|---|---:|---:|---:|
+| HistGBR Residual Hybrid GNN (R2 tuned) | 0.533599 | **0.646247** | **0.136238** |
+| Ridge Residual Hybrid GNN (R2 tuned) | 0.535577 | 0.646839 | 0.134655 |
+| Linear Regression | 0.529750 | 0.650514 | 0.124795 |
+| Ridge Regression | 0.531378 | 0.651081 | 0.123270 |
+| Random Forest | 0.533727 | 0.652021 | 0.120735 |
+| HistGBR | 0.530908 | 0.654312 | 0.114546 |
+| Ridge Residual Hybrid GNN (MAE shrinkage) | 0.530682 | 0.656074 | 0.109769 |
+| HistGBR Residual Hybrid GNN (MAE shrinkage) | 0.531180 | 0.659328 | 0.100918 |
+| Rolling Volatility | 0.602609 | 0.703597 | -0.023868 |
+| GNN Correlation Only | 0.619792 | 0.747527 | -0.155713 |
+| GNN + Relationship | 0.621335 | 0.748015 | -0.157223 |
+| GNN Correlation Only (Ablation) | 0.622127 | 0.749514 | -0.161865 |
+| Hybrid MLP-GAT | 0.615900 | 0.754033 | -0.175919 |
+| GNN + News | 0.645702 | 0.782420 | -0.266124 |
+| Full Model | 0.646429 | 0.790028 | -0.290868 |
+
+Nhan xet:
+
+- Neu xet MAE, Linear Regression van tot nhat voi MAE = 0.529750; cac bien the residual hybrid moi chua vuot MAE.
+- Neu xet RMSE va R2, `HistGBR Residual Hybrid GNN (R2 tuned)` tot nhat voi RMSE = 0.646247 va R2 = 0.136238, cao hon Linear Regression R2 = 0.124795.
+- HistGBR alone khong tot hon Linear Regression ve R2, nhung khi ket hop residual GNN thi cho R2 tot nhat. Dieu nay cho thay graph residual co dong gop nho nhung co that theo tieu chi R2/RMSE.
+- GNN thuan va Hybrid MLP-GAT thuan van yeu hon baseline.
+- Ket qua khong nen trinh bay la GNN thang tuyet doi tren moi metric; nen trinh bay trung thuc rang GNN cai thien R2/RMSE nhung chua cai thien MAE.
+
+Ket luan bao ve nen dung:
+
+> Residual Hybrid GNN cho thay thong tin graph co dong gop bo sung vao bai toan du bao volatility theo RMSE/R2. Tuy nhien, MAE van chua vuot Linear Regression, nen ket luan can nhan manh vao residual learning va phan tich sai so thay vi khang dinh GNN thang tren moi tieu chi.
+
+---
+
+## 9. Phan tich vi sao Residual Hybrid GNN hop ly
+
+Trong bai toan tai chinh, feature gia ngan han thuong rat manh. Linear Regression co the hoc nhanh cac quan he truc tiep giua feature gia va volatility. Neu bat GNN hoc toan bo target tu dau, GNN de bi:
+
+- Graph nhieu.
+- Target kho hoc.
+- News sparse.
+- Quan he doanh nghiep khong phai luc nao cung anh huong truc tiep den volatility ngan han.
+
+Residual Hybrid GNN giai quyet bang cach:
+
+```text
+baseline hoc tin hieu de hoc
+GNN hoc phan baseline con sai
+```
+
+Do do mo hinh phu hop hon voi cau hoi nghien cuu:
+
+> Quan he doanh nghiep va graph co giup giai thich phan bien dong ma feature tabular/gia chua giai thich duoc hay khong?
+
+---
+
+## 10. Case study va report assets
+
+Da cap nhat cac output:
+
+```text
+outputs/report/09_model_evaluation/
+outputs/report/10_report_assets/
+outputs/report/11_regression_metrics/
+```
+
+Noi dung da tao:
+
+- Bang metric test-set.
+- Bang sai so theo ticker.
+- Bang sai so theo news category.
+- Bang sai so theo ngay su kien.
+- 45 case studies.
+- Bieu do target distribution.
+- Bieu do volatility raw vs baseline.
+- Bieu do abnormal volatility theo ngay.
+- Bieu do so sanh MAE model.
+- Scatter plot du bao vs thuc te.
+
+---
+
+## 11. Cac thu nghiem chua nen ket luan chinh
+
+### 11.1. GNN thuan
+
+GNN thuan, GNN + News, GNN + Relationship va Full Model hien chua vuot baseline. Cac ket qua nay van co gia tri vi chung chung minh:
+
+- Graph khong the dua vao mot cach may moc.
+- Can lam graph thua va dung residual learning.
+- News/title embedding co the them nhieu neu khong co feature selection phu hop.
+
+### 11.2. PhoBERT
+
+PhoBERT hien duoc dung de tao embedding title:
+
+```text
+vinai/phobert-base
+768 dimensions -> PCA 64 dimensions
+```
+
+Tuy nhien PhoBERT khong co metric rieng. Metric chi co y nghia sau khi:
+
+```text
+PhoBERT embedding
+-> rebuild graph
+-> train model
+-> compare with no-PhoBERT setting
+```
+
+### 11.3. Tuned TopK Graph MLP
+
+Ket qua TopK Graph MLP kha gan baseline, nhung hien chua duoc dua lam ket luan chinh vi output chua co prediction day du de tinh R2 trong bang tong hop.
+
+---
+
+## 12. Ket luan chinh
+
+1. Bai toan cua du an la hoi quy du bao `log_abnormal_volatility_5d`, dai dien cho bien dong bat thuong 5 ngay sau tin tuc.
+
+2. Pipeline hien da duoc chuan hoa thanh local-only, co runner `scripts/00_run_local_pipeline.py`, giup tai lap ket qua ro rang.
+
+3. Baseline tabular, dac biet Linear Regression, la doi thu rat manh vi feature gia ngan han co tin hieu lon.
+
+4. GNN thuan chua vuot baseline, cho thay graph va news neu dua truc tiep vao model co the gay nhieu.
+
+5. Residual Hybrid GNN la huong phu hop nhat voi de tai. Mo hinh nay dung baseline de hoc tin hieu co ban, sau do dung GNN hoc phan residual tu graph.
+
+6. Ket qua moi nhat cho thay Residual Hybrid GNN cai thien RMSE/R2 nhung chua cai thien MAE:
+
+```text
+MAE: 0.533599 > Linear Regression 0.529750
+R2:  0.136238 > Linear Regression 0.124795
+RMSE: 0.646247 < Linear Regression 0.650514
+```
+
+7. Ket luan khoa hoc nen trinh bay:
+
+> Graph Neural Networks co dong gop tot nhat khi duoc thiet ke theo huong residual hybrid, bo sung tin hieu quan he doanh nghiep cho baseline tabular, thay vi thay the baseline hoan toan.
+
+---
+
+## 13. Huong phat trien
+
+- Kiem dinh PhoBERT bang ablation co/khong PhoBERT.
+- Thu graph thua hon theo tung nganh va tung quan he doanh nghiep.
+- Thiet ke target classification cho abnormal volatility jump.
+- Them macro features nhu lai suat, CPI, VNIndex volatility.
+- Thu R-GCN/GAT co regularization manh hon.
+- Bao cao confidence interval hoac bootstrap test cho improvement nho giua baseline va residual hybrid.

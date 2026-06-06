@@ -4,7 +4,7 @@ input_articles,55518,Firm-specific articles from news_articles.csv
 saved_snapshots,23705,Ticker-date event snapshots saved to graph_snapshots.pt
 skipped_events,7945,Ticker-date events skipped by temporal/data availability rules
 num_nodes,118,Fixed stock universe size
-num_node_features,76,price + micro + industry + macro + news + category + exposure
+num_node_features,140,price + micro + industry + macro + news + category + exposure
 category_count,10,News category one-hot width
 unique_event_dates,740,Correlation cache keys
 edge_type_count,6,"positive/negative correlation, ownership, value-chain, sector, news co-mention"

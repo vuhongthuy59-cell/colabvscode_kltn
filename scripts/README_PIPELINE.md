@@ -1,106 +1,96 @@
-# Clean Forecasting Pipeline
+# Local Scientific Pipeline
 
-Run from the project root.
+Run all commands from the project root.
 
-## Logic
+## Core idea
 
-The project is organized as a standard forecasting workflow:
-
-```text
-config
--> price data preparation
--> news data preparation
--> optional PhoBERT title embedding on Colab
--> news labeler validation
--> company relationship preparation
--> event graph dataset construction
--> baseline model training
--> GNN ablation training
--> selected GNN tuning
--> model evaluation and case studies
--> report asset generation
--> regression metric computation
-```
-
-## Scripts
-
-| Step | Environment | Script | Main output |
-|---:|---|---|---|
-| 00 | VSCode | `project_config.py` | Shared path/data-scope configuration |
-| 01 | VSCode/local | `01_prepare_price_data.py` | `outputs/local/01_price_data/` |
-| 02 | VSCode/local | `02_prepare_news_data.py` | `outputs/local/02_news_data/` |
-| 06B | Google Colab/GPU | `colab/06_phobert_embedding_colab.ipynb` | `outputs/local/02_news_data/news_title_embedding_pca.csv` |
-| 03 | VSCode/local | `03_train_news_labeler.py` | `outputs/local/03_news_labeler/` |
-| 04 | VSCode/local | `04_prepare_company_relationships.py` | `outputs/local/04_company_relationships/` |
-| 05 | VSCode/local | `05_build_event_graph_dataset.py` | `outputs/local/05_event_graph_dataset/` |
-| 06 | VSCode/local | `06_train_baseline_models.py` | `outputs/local/06_baseline_models/` |
-| 07 | Google Colab/GPU | `07_train_gnn_ablation_models.py` | `outputs/colab/07_gnn_ablation_models/` |
-| 08 | Google Colab/GPU | `08_tune_selected_gnn.py` | `outputs/colab/08_tuned_gnn/` |
-| 09 | VSCode/report | `09_evaluate_models_and_cases.py` | `outputs/report/09_model_evaluation/` |
-| 10 | VSCode/report | `10_generate_report_assets.py` | `outputs/report/10_report_assets/` |
-| 11 | VSCode/report | `11_compute_regression_metrics.py` | `outputs/report/11_regression_metrics/` |
-| 12 | Google Colab/GPU | `12_train_hybrid_mlp_gat.py` | `outputs/colab/12_hybrid_mlp_gat/` |
-| 13 | VSCode/report | `13_plot_outputs_and_volatility.py` | `outputs/report/10_report_assets/` |
-
-## Output Layout
+This repository is organized as a local forecasting research pipeline:
 
 ```text
-outputs/
-  local/
-    01_price_data/
-    02_news_data/
-      news_title_embedding_pca.csv  # optional PhoBERT PCA input for graph builder
-    03_news_labeler/
-    04_company_relationships/
-    05_event_graph_dataset/
-    06_baseline_models/
-  colab/
-    07_gnn_ablation_models/
-    08_tuned_gnn/
-    12_hybrid_mlp_gat/
-  report/
-    09_model_evaluation/
-    10_report_assets/
-    11_regression_metrics/
+data cleaning
+-> feature engineering
+-> target and graph construction
+-> baseline models
+-> GNN models
+-> residual hybrid GNN
+-> metrics, case studies, report assets
 ```
 
-## Recommended Run Order
+The official thesis pipeline writes model outputs to:
+
+```text
+outputs/local/
+```
+
+and report outputs to:
+
+```text
+outputs/report/
+```
+
+The old Colab branch was removed from the clean thesis pipeline. All official scripts now run locally.
+
+## Step table
+
+| Step | Script | Main output |
+|---:|---|---|
+| 00 | `scripts/00_run_local_pipeline.py` | local pipeline runner |
+| 01 | `scripts/01_prepare_price_data.py` | `outputs/local/01_price_data/` |
+| 02 | `scripts/02_prepare_news_data.py` | `outputs/local/02_news_data/` |
+| 03 | `scripts/03_train_news_labeler.py` | `outputs/local/03_news_labeler/` |
+| 04 | `scripts/04_prepare_company_relationships.py` | `outputs/local/04_company_relationships/` |
+| 05 | `scripts/05_build_event_graph_dataset.py` | `outputs/local/05_event_graph_dataset/` |
+| 06 | `scripts/06_train_baseline_models.py` | `outputs/local/06_baseline_models/` |
+| 07 | `scripts/07_train_gnn_ablation_models.py` | `outputs/local/07_gnn_ablation_models/` |
+| 08 | `scripts/08_tune_selected_gnn.py` | `outputs/local/08_tuned_gnn/` |
+| 12 | `scripts/12_train_hybrid_mlp_gat.py` | `outputs/local/12_hybrid_mlp_gat/` |
+| 14 | `scripts/14_train_residual_hybrid_gnn.py` | `outputs/local/14_residual_hybrid_gnn/` |
+| 09 | `scripts/09_evaluate_and_report.py` | `outputs/report/09_model_evaluation/`, `outputs/report/10_report_assets/`, `outputs/report/11_regression_metrics/` |
+
+Shared utilities:
+
+```text
+scripts/pipeline_utils.py
+```
+
+This file keeps common temporal split and regression metric helpers in one place. It does not change model logic.
+
+## Recommended commands
+
+Run everything:
 
 ```powershell
-# VSCode/local: data correctness and light baselines
-python scripts\01_prepare_price_data.py
-python scripts\02_prepare_news_data.py
-
-# Google Colab/GPU optional: create PhoBERT PCA title embeddings
-# Open and run: colab/06_phobert_embedding_colab.ipynb
-# Then copy Drive output back to:
-# outputs/local/02_news_data/news_title_embedding_pca.csv
-
-python scripts\03_train_news_labeler.py
-python scripts\04_prepare_company_relationships.py
-python scripts\05_build_event_graph_dataset.py
-python scripts\06_train_baseline_models.py
-
-# Google Colab/GPU: heavy GNN training
-python scripts\07_train_gnn_ablation_models.py
-python scripts\08_tune_selected_gnn.py
-python scripts\12_train_hybrid_mlp_gat.py
-
-# VSCode/report: collect, evaluate, plot, write thesis assets
-python scripts\09_evaluate_models_and_cases.py
-python scripts\10_generate_report_assets.py
-python scripts\11_compute_regression_metrics.py
-python scripts\13_plot_outputs_and_volatility.py
+python scripts\00_run_local_pipeline.py
 ```
 
-## Archived Experiments
+Run from graph construction onward:
 
-Older feature-selection, edge-ablation, residual-GNN, blending, anchored-GNN, and graph-Ridge experiments are archived under:
+```powershell
+python scripts\00_run_local_pipeline.py --from-step 05
+```
+
+Refresh only final metrics and report assets:
+
+```powershell
+python scripts\00_run_local_pipeline.py --from-step 09
+```
+
+Skip heavy GNN scripts:
+
+```powershell
+python scripts\00_run_local_pipeline.py --skip-heavy
+```
+
+## Scientific interpretation
+
+Use Linear Regression and Random Forest as tabular baselines.
+
+Use GNN ablation to test whether graph, news and relationship layers add useful information.
+
+Use Residual Hybrid GNN as the main defensible GNN direction:
 
 ```text
-archive/extra_scripts/
-archive/extra_outputs/
-archive/reports/
+final_prediction = linear_baseline_prediction + alpha * graph_residual_prediction
 ```
 
-They are kept for traceability but are not part of the clean thesis pipeline.
+This directly tests whether graph structure explains the part of stock volatility that the tabular baseline misses.

@@ -6,12 +6,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
-from sklearn.metrics import mean_absolute_error, mean_squared_error
 
-from project_config import colab_output, local_output
+from pipeline_utils import assign_temporal_split, regression_metrics
+from project_config import local_output
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_DIR = colab_output("12_hybrid_mlp_gat")
+OUT_DIR = local_output("12_hybrid_mlp_gat")
 
 SNAPSHOT_FILE = local_output("05_event_graph_dataset") / "graph_snapshots.pt"
 SNAPSHOT_INDEX_FILE = local_output("05_event_graph_dataset") / "snapshot_index.csv"
@@ -88,26 +88,7 @@ class HybridMLPGAT(torch.nn.Module):
         return self.head(combined).squeeze(-1)
 
 
-def split_snapshot_ids(index: pd.DataFrame) -> tuple[set[int], set[int], set[int]]:
-    ordered = index.sort_values(["event_trading_date", "snapshot_id"]).reset_index(drop=True)
-    unique_dates = ordered["event_trading_date"].drop_duplicates().reset_index(drop=True)
-    train_end = int(len(unique_dates) * 0.70)
-    val_end = int(len(unique_dates) * 0.85)
-    train_dates = set(unique_dates.iloc[:train_end])
-    val_dates = set(unique_dates.iloc[train_end:val_end])
-    test_dates = set(unique_dates.iloc[val_end:])
-    return (
-        set(ordered.loc[ordered["event_trading_date"].isin(train_dates), "snapshot_id"].astype(int)),
-        set(ordered.loc[ordered["event_trading_date"].isin(val_dates), "snapshot_id"].astype(int)),
-        set(ordered.loc[ordered["event_trading_date"].isin(test_dates), "snapshot_id"].astype(int)),
-    )
-
-
-def metrics(y_true: np.ndarray, y_pred: np.ndarray) -> tuple[float, float]:
-    return (
-        float(mean_absolute_error(y_true, y_pred)),
-        float(np.sqrt(mean_squared_error(y_true, y_pred))),
-    )
+metrics = regression_metrics
 
 
 def sample_weights_from_train_quantiles(y: np.ndarray, q75: float, q90: float) -> np.ndarray:
@@ -292,7 +273,7 @@ def train_model(samples: pd.DataFrame, arrays_np: dict[str, np.ndarray], num_edg
         model.load_state_dict(best_state)
 
     prediction_frames = []
-    for split_name, split_idx in [("validation", val_idx), ("test", test_idx)]:
+    for split_name, split_idx in [("train", train_idx), ("validation", val_idx), ("test", test_idx)]:
         pred = predict_batches(model, arrays, split_idx)
         frame = samples.iloc[split_idx].copy()
         frame["model"] = "Hybrid MLP-GAT"
@@ -314,10 +295,7 @@ def main() -> None:
     print(f"Loaded {len(snapshots)} snapshots")
 
     samples, arrays = build_samples(snapshots, index)
-    train_ids, val_ids, test_ids = split_snapshot_ids(index)
-    samples.loc[samples["snapshot_id"].isin(train_ids), "split"] = "train"
-    samples.loc[samples["snapshot_id"].isin(val_ids), "split"] = "validation"
-    samples.loc[samples["snapshot_id"].isin(test_ids), "split"] = "test"
+    samples = assign_temporal_split(samples, index)
 
     model, training_log, predictions = train_model(samples, arrays, num_edge_types=len(edge_type_map))
     torch.save(

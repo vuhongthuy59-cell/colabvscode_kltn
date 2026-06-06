@@ -13,16 +13,11 @@ INCLUDE_2026_APPEND_ENV = "KLTN_INCLUDE_2026_APPEND"
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_ROOT = ROOT / "outputs"
 LOCAL_OUTPUT_ROOT = OUTPUT_ROOT / "local"
-COLAB_OUTPUT_ROOT = OUTPUT_ROOT / "colab"
 REPORT_OUTPUT_ROOT = OUTPUT_ROOT / "report"
 
 
 def local_output(step_name: str) -> Path:
     return LOCAL_OUTPUT_ROOT / step_name
-
-
-def colab_output(step_name: str) -> Path:
-    return COLAB_OUTPUT_ROOT / step_name
 
 
 def report_output(step_name: str) -> Path:
